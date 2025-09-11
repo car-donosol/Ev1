@@ -1,0 +1,53 @@
+.alerta {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: .800rem;
+    background-color: #007400;
+    color: white;
+    letter-spacing: .300rem;
+    font-size: .800rem;
+}
+
+.menu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+}
+
+.logo-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.left-menu {
+    display: flex;
+    gap:  40px;
+}
+
+.ul-left-menu {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+    align-items: center;
+}
+
+.ul-left-menu li {
+    cursor: pointer;
+}
+
+.ul-right-menu {
+    display: flex;
+    list-style: none;
+    gap: 20px;
+    align-items: center;
+    padding-right: 20px;
+}
+
+.ul-right-menu li {
+    cursor: pointer;
+}
