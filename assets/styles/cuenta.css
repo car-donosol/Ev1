@@ -1,0 +1,49 @@
+.content {
+    display: flex;
+    gap: 30px;
+    padding: 15px 20px;
+}
+
+.info-content {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.account-info {
+    flex: 1;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.account-info-title {
+    margin-bottom: 1rem;
+}
+
+.direcciones {
+    gap: 20px;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.direcciones-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    gap: 10px;
+}
+
+.lista-direcciones {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+    gap: 20px;
+}
+
+.delivery-info {
+    margin-top: 1rem;
+    flex: 1;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+}

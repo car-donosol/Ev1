@@ -1,0 +1,30 @@
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 70vh;
+    gap: 20px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 300px;
+}
+
+.label {
+    font-size: .800rem;
+    letter-spacing: .150rem;
+}
+
+.error {
+    color: #9c1c1c;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    background-color: rgba(255, 0, 0, 0.1);
+    padding: .500rem;
+    border: 1px solid #9c1c1c;
+    display: none;
+}

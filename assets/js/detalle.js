@@ -1,41 +1,63 @@
+import { supabase } from "../../db/supabase.js";
+
+const div = document.getElementById("detalle");
 const url = new URLSearchParams(window.location.search);
+const slug = url.get("producto");
 
-import { data } from "../../api/db.js"
+const cargando = document.getElementById("cargando")
 
-const id = url.get("id")
-
-if(!id) window.location.href = "404.html"
-
-const res = data.find(s => s.id == id)
-
-const div = document.getElementById("detalle")
-
-if(!res) {
-    document.title = "Producto no encontrado - Huertabeja";
-    const section = document.createElement("section")
-    section.className = "container-404"
-
-    const h4 = document.createElement("h4")
-    h4.textContent = "404 Producto no encontrado"
-
-    const p = document.createElement("p")
-    p.textContent = "El producto que ha solicitado no existe"
-
-    section.appendChild(h4)
-    section.appendChild(p)
-
-    div.appendChild(section)
+if (!slug) {
+    noencontrado()
+} else {
+    producto(slug);
 }
 
-document.title = `${res.name} - Huertabeja`;
+async function producto(id) {
+    try {
+        const { data, error } = await supabase.from("productos").select("*").eq("slug", slug).single();
 
-const imagen = document.createElement("img")
-imagen.src = `./assets/img/${res.image}`
-imagen.width = 350
-imagen.height = 350
+        if (error || !data) {
+            noencontrado()
+            return;
+        }
 
-const titulo = document.createElement("h1")
-titulo.textContent = res.name
+        document.title = `${data.name} - Huertabeja`;
+        
+        const imagen = document.createElement("img");
+        imagen.src = data.image;
+        imagen.width = 350;
+        imagen.height = 350;
+        imagen.alt = data.name;
 
-div.appendChild(imagen)
-div.appendChild(titulo)
+        const titulo = document.createElement("h1");
+        titulo.textContent = data.name;
+
+        div.appendChild(imagen);
+        div.appendChild(titulo);
+        
+        cargando.style.display = "none"
+
+    } catch (err) {
+        console.error("Error al obtener el producto:", err);
+        noencontrado()
+    }
+}
+
+function noencontrado() {
+    document.title = "Producto no encontrado - Huertabeja";
+
+    cargando.style.display = "none"
+
+    const section = document.createElement("section");
+    section.className = "container-404";
+
+    const h4 = document.createElement("h4");
+    h4.textContent = "404 Producto no encontrado";
+
+    const p = document.createElement("p");
+    p.textContent = "El producto que ha solicitado no existe";
+
+    section.appendChild(h4);
+    section.appendChild(p);
+    div.appendChild(section);
+}
