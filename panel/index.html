@@ -1,23 +1,206 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de control</title>
+    <link rel="icon" type="image/x-icon" href="./assets/img/logo.png">
+    <link rel="stylesheet" href="../assets/styles/global.css">
+    <link rel="stylesheet" href="../assets/styles/menu.css">
+    <link rel="stylesheet" href="../assets/styles/panel.css">
+
+    <style>
+        .cargando {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007400;
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            animation: spin 1s linear infinite;
+            margin: 50px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <nav>
+    <main class="container">
+        <header>
+            <nav class="menu">
+                <div class="left-menu">
+                    <a href="/" class="logo-container">
+                        <img src="../assets/img/logo.png" width="40" height="40" alt="logo de huertabeja">
+                        <h1 class="logo-text">Huertabeja</h1>
+                    </a>
+                    <ul class="ul-left-menu">
+                        <li>Regresar a tu cuenta</li>
+                    </ul>
+                </div>
+                <div class="right-menu">
+                    <ul class="ul-right-menu">
+                        <a href="/login.html">
+                            <li>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"/>
+                                    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/>
+                                </svg>
+                            </li>
+                        </a>
+                    </ul>
+                </div>
+            </nav>
+        </header>
 
-        </nav>
-    </header>
+        <div id="cargando" class="cargando"></div>
 
+        <section id="form-productos" style="display: none;" >
+            <h2>Subir Producto</h2>
+
+            <div class="create-product-form">
+                <div>
+                    <h3>Imagen: </h3>
+                    <input type="file" id="fileInput" accept="image/*">
+                </div>
+                <div>
+                    <h3>Titulo: </h3>
+                    <input type="text" id="titleInput">
+                </div>
+                <div>
+                    <h3>Descripcion: </h3>
+                    <textarea id="descriptionInput"></textarea>
+                </div>
+                <div>
+                    <h3>Precio: </h3>
+                    <input type="number" id="priceInput">
+                </div>
+                <div>
+                    <h3>Stock</h3>
+                    <input type="number" id="stockInput">
+                </div>
+                <p id="subiendoProducto" style="display: none;">Subiendo producto...</p>
+                <button id="createProductBtn" type="button" >Crear Producto</button>
+            </div>
+
+            <p id="status"></p>
+        </section>
+    </main>
     <script type="module">
         import { supabase } from '../db/supabase.js';
         import { getSession } from '../assets/js/getSession.js';
+        import { slugify } from '../utils/slugify.js';
 
         const session = await getSession(supabase);
         await supabase.auth.setSession(session);
+
+        const cargando = document.getElementById('cargando');
+        const formProductos = document.getElementById('form-productos');
+
+        async function user() {
+            try {
+                const { data: { user } } = await supabase.auth.getUser();
+
+                const { data: userData, error } = await supabase.from('users')
+                    .select('*')
+                    .eq('id', user.id)
+                    .single();
+
+                if (error) throw error;
+
+                const { data: userRol, error: errorRol } = await supabase.from('roles')
+                    .select('rol')
+                    .eq('id', userData.rol_id)
+                    .single();
+
+                if(userRol.rol != 'admin') {
+                    window.location.href = '/cuenta';
+                }
+
+                cargando.style.display = 'none';
+                formProductos.style.display = 'block';
+            } catch (error) {
+                console.error('Error al obtener usuario:', error.message);
+            }
+        }
+
+        async function addProduct() {
+            const fileInput = document.getElementById("fileInput");
+            const titleInput = document.getElementById("titleInput");
+            const descriptionInput = document.getElementById("descriptionInput");
+            const priceInput = document.getElementById("priceInput");
+            const stockInput = document.getElementById("stockInput");
+            const createProductBtn = document.getElementById("createProductBtn");
+            const subiendoProducto = document.getElementById("subiendoProducto");
+
+            const file = fileInput.files[0];
+            if (!file) {
+                alert("Selecciona una imagen primero");
+                return;
+            }
+
+            subiendoProducto.style.display = 'block';
+            createProductBtn.style.display = 'none';
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            let imageUrl = '';
+            try {
+                const res = await fetch('https://qrv-storage.evairx.me/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!res.ok) {
+                    const text = await res.text();
+                    subiendoProducto.style.display = 'none';
+                    createProductBtn.style.display = 'block';
+                    throw new Error(`Error al subir imagen: ${text}`);
+                }
+
+                imageUrl = await res.text();
+            } catch (err) {
+                subiendoProducto.style.display = 'none';
+                createProductBtn.style.display = 'block';
+                console.error(err);
+                return;
+            }
+
+            const { data: { user }, error: userError } = await supabase.auth.getUser();
+            if (userError) {
+                console.error('Error obteniendo usuario:', userError);
+                return;
+            }
+
+            const { data, error } = await supabase.rpc('create_product', { 
+                p_user_id: user.id,
+                p_name: titleInput.value,
+                p_image: imageUrl,
+                p_overview: descriptionInput.value,
+                p_price: Number(priceInput.value),
+                p_slug: slugify(titleInput.value),
+                p_stock: Number(stockInput.value)
+            })
+
+            if (error) {
+                console.error('Error creando producto:', error);
+                subiendoProducto.style.display = 'none';
+                createProductBtn.style.display = 'block';
+                return;
+            }
+
+            console.log("Producto a crear:", data);
+            subiendoProducto.style.display = 'none';
+            createProductBtn.style.display = 'block';
+            
+        }
+
+        user();
+        document.getElementById("createProductBtn").addEventListener("click", addProduct);
     </script>
+
 </body>
 </html>
