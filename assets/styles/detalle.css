@@ -117,8 +117,13 @@
 }
 
 @keyframes spiner {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 
@@ -144,11 +149,119 @@
     width: 550px;
 }
 
+.mas-productos-container {
+    margin-top: 35px;
+    width: 100%;
+    position: relative;
+}
+
+.titulo-mas-productos {
+    font-size: 1.3em;
+    font-weight: 550;
+    margin-bottom: 20px;
+    letter-spacing: .120rem;
+    text-align: center;
+}
+
+.producto-sugerido {
+    width: 250px;
+    /* ancho fijo del slide */
+    flex: 0 0 auto;
+    /* importante para respetar el ancho fijo */
+    box-sizing: border-box;
+    /* incluye padding y borde en el width */
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.imagen-producto {
+    width: 250px;
+    height: 250px;
+    object-fit: cover;
+}
+
+.info-contenido {
+    margin-top: 10px;
+}
+
+.btn-ver-producto {
+    margin-top: 10px;
+    background-color: #0a6b20;
+    border: 2px solid #0a6b20;
+    padding: .400rem 1.2rem;
+    font-size: 0.9em;
+    letter-spacing: .100rem;
+    cursor: pointer;
+    color: white;
+}
+
+/* Contenedor de los botones */
+.tns-controls {
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    /* para superponer sobre el slider */
+    top: 50%;
+    width: 100%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    /* evitar bloquear clicks en el slider */
+    z-index: 10;
+}
+
+/* Botones prev/next */
+.tns-controls button {
+    pointer-events: all;
+    /* habilitar clicks */
+    background-color: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: white;
+    font-size: 18px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.tns-controls button:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Opcional: iconos más grandes o flechas */
+.tns-controls button::before {
+    content: '';
+    /* Si quieres puedes usar flechas CSS o emojis */
+}
+
+/* Para mover los botones un poco fuera del slider */
+.tns-controls button[data-controls="prev"] {
+    margin-left: 5px;
+}
+
+.tns-controls button[data-controls="next"] {
+    margin-right: 5px;
+}
+
+.tns-nav {
+    display: none !important;
+}
+
+/* Ocultar los botones de autoplay */
+button[data-action="start"] {
+    display: none !important;
+}
+
+button[data-action="stop"] {
+    display: none !important;
+}
+
+
 @media (max-width: 1020px) {
     .descripcion-producto {
         width: 100%;
     }
-    
+
 }
 
 @media (max-width: 850px) {
@@ -156,15 +269,18 @@
         flex-direction: column;
     }
 
-        .btn-agregar {
+    .btn-agregar {
         width: 100%;
     }
+
     .btn-agregar-cargando {
         width: 100%;
     }
+
     .btn-agregar-disabled {
         width: 100%;
     }
+
     .alerta-stock {
         text-align: center;
     }
@@ -177,7 +293,7 @@
 
     .precio-detalle {
         margin-bottom: 0;
-    }   
+    }
 }
 
 @media (max-width: 470px) {
@@ -186,15 +302,19 @@
         height: auto;
         text-align: center;
     }
+
     .btn-agregar {
         width: 100%;
     }
+
     .btn-agregar-cargando {
         width: 100%;
     }
+
     .btn-agregar-disabled {
         width: 100%;
     }
+
     .alerta-stock {
         text-align: center;
     }
@@ -207,5 +327,5 @@
 
     .precio-detalle {
         margin-bottom: 0;
-    }   
+    }
 }

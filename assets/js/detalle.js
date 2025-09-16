@@ -1,9 +1,11 @@
 import { supabase } from "../../db/supabase.js";
+import { tns } from 'https://cdn.skypack.dev/tiny-slider';
+
 
 const div = document.getElementById("detalle");
 const url = new URLSearchParams(window.location.search);
 
-if(!url.has("planta")) {
+if (!url.has("planta")) {
     window.location.href = "index.html";
 }
 
@@ -13,12 +15,14 @@ const cargando = document.getElementById("cargando")
 
 if (!slug) {
     noencontrado()
+    productosSugeridos();
 } else {
     producto(slug);
+    productosSugeridos();
 }
 
 function formatearMoneda(numero) {
-  return new Intl.NumberFormat('es-CL').format(numero);
+    return new Intl.NumberFormat('es-CL').format(numero);
 }
 
 async function producto(id) {
@@ -31,7 +35,7 @@ async function producto(id) {
         }
 
         document.title = `${data.name} - Huertabeja`;
-        
+
         const imagen = document.createElement("img");
         imagen.className = "imagen-detalle";
         imagen.src = data.image;
@@ -102,7 +106,7 @@ async function producto(id) {
         const descripcion = document.createElement("p");
         descripcion.textContent = data.overview;
         descripcion.className = "descripcion-producto";
-        
+
         div.appendChild(imagen);
         div.appendChild(detalle);
         detalle.appendChild(titulo);
@@ -137,4 +141,61 @@ function noencontrado() {
     section.appendChild(h4);
     section.appendChild(p);
     div.appendChild(section);
+}
+
+async function productosSugeridos() {
+    const { data, error } = await supabase.from('productos').select('*');
+    const contenedor = document.getElementById("productos-sugeridos");
+
+    if (error) {
+        console.error(error);
+        return;
+    }
+
+    for (let p of data) {
+        const contenedorProducto = document.createElement("div");
+        contenedorProducto.className = "producto-sugerido";
+
+        const imagen = document.createElement("img");
+        imagen.src = p.image;
+        imagen.alt = p.name;
+        imagen.className = "imagen-producto";
+
+        const infoContenido = document.createElement("div");
+        infoContenido.className = "info-contenido";
+        
+        const titulo = document.createElement("h2");
+        titulo.textContent = p.name;
+        titulo.className = "titulo-producto";
+
+        const precio = document.createElement("p");
+        precio.textContent = `$${formatearMoneda(p.price)}`;
+        precio.className = "precio-producto";
+
+        const button = document.createElement("button");
+        button.textContent = "Ver producto";
+        button.className = "btn-ver-producto";
+
+        contenedorProducto.appendChild(imagen);
+        infoContenido.appendChild(titulo);
+        infoContenido.appendChild(precio);
+        infoContenido.appendChild(button);
+        contenedorProducto.appendChild(infoContenido);
+        contenedor.appendChild(contenedorProducto);
+    }
+
+    const slider = tns({
+        container: '.my-slider',
+        items: 1,
+        slideBy: 'page',
+        autoplay: true,
+        controls: true,
+        autoplayTimeout: 6000,
+        mouseDrag: true,
+        gutter: 5,
+        responsive: {
+            640: { items: 2, gutter: 20 },
+            900: { items: 3, gutter: 30 }
+        }
+    });
 }
