@@ -104,7 +104,7 @@ async function producto(id) {
         tituloDescripcion.className = "titulo-descripcion";
 
         const descripcion = document.createElement("p");
-        descripcion.textContent = data.overview;
+        descripcion.textContent = data.overview || "Sin descripción disponible.";
         descripcion.className = "descripcion-producto";
 
         div.appendChild(imagen);
@@ -172,6 +172,11 @@ async function productosSugeridos() {
         precio.textContent = `$${formatearMoneda(p.price)}`;
         precio.className = "precio-producto";
 
+        const a = document.createElement("a");
+        a.href = `detalle.html?planta=${p.slug}`;
+        a.style.textDecoration = "none";
+        a.style.color = "inherit";
+
         const button = document.createElement("button");
         button.textContent = "Ver producto";
         button.className = "btn-ver-producto";
@@ -179,7 +184,8 @@ async function productosSugeridos() {
         contenedorProducto.appendChild(imagen);
         infoContenido.appendChild(titulo);
         infoContenido.appendChild(precio);
-        infoContenido.appendChild(button);
+        a.appendChild(button);
+        infoContenido.appendChild(a);
         contenedorProducto.appendChild(infoContenido);
         contenedor.appendChild(contenedorProducto);
     }

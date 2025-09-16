@@ -195,6 +195,12 @@
     color: white;
 }
 
+.btn-ver-producto:hover {
+    background-color: transparent;
+    color: #0a6b20;
+    transition: all 0.3s ease-in-out;
+}
+
 /* Contenedor de los botones */
 .tns-controls {
     display: flex;
