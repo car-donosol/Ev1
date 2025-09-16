@@ -1,0 +1,11 @@
+.imagenprod{
+    width: 220px;
+    height: 220px;
+    border-radius: 10px;
+}
+
+.celdaprod{
+    gap: 10px;
+    display: flex;
+    flex-wrap: wrap;
+}
