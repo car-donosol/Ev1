@@ -4,11 +4,11 @@
     justify-content: center;
     align-items: center;
     gap: 10px;
-    padding: .800rem;
-    background-color: #007400;
+    padding: .400rem;
+    background-color: #0a6b20;
     color: white;
-    letter-spacing: .300rem;
-    font-size: .800rem;
+    letter-spacing: .200rem;
+    font-size: .700rem;
 }
 
 .menu {

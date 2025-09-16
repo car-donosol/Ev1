@@ -2,7 +2,12 @@ import { supabase } from "../../db/supabase.js";
 
 const div = document.getElementById("detalle");
 const url = new URLSearchParams(window.location.search);
-const slug = url.get("producto");
+
+if(!url.has("planta")) {
+    window.location.href = "index.html";
+}
+
+const slug = url.get("planta");
 
 const cargando = document.getElementById("cargando")
 
@@ -10,6 +15,10 @@ if (!slug) {
     noencontrado()
 } else {
     producto(slug);
+}
+
+function formatearMoneda(numero) {
+  return new Intl.NumberFormat('es-CL').format(numero);
 }
 
 async function producto(id) {
@@ -24,17 +33,63 @@ async function producto(id) {
         document.title = `${data.name} - Huertabeja`;
         
         const imagen = document.createElement("img");
+        imagen.className = "imagen-detalle";
         imagen.src = data.image;
-        imagen.width = 350;
-        imagen.height = 350;
         imagen.alt = data.name;
 
+        const detalle = document.createElement("div");
+        detalle.className = "detalle-producto";
+
         const titulo = document.createElement("h1");
+        titulo.className = "titulo-detalle";
         titulo.textContent = data.name;
 
-        div.appendChild(imagen);
-        div.appendChild(titulo);
+        const precio = document.createElement("p");
+        precio.textContent = `$${formatearMoneda(data.price)}`;
+        precio.className = "precio-detalle";
+
+        const stock = document.createElement("span");
+        stock.textContent = data.stock > 0 ? "Disponible" : "Agotado";
+        stock.className = data.stock > 0 ? "stock-disponible" : "stock-agotado";
+
+        const contenedorAgregar = document.createElement("div");
+        contenedorAgregar.className = "contenedor-agregar";
+
+        const agregarCarrito = document.createElement("button");
+        agregarCarrito.textContent = "Agregar al carrito";
+        agregarCarrito.className = data.stock > 0 ? "btn-agregar" : "btn-agregar-disabled";
+        agregarCarrito.disabled = data.stock <= 0;
         
+        agregarCarrito.onclick = () => {
+            agregarCarrito.className = "btn-agregar-cargando";
+            const loadingSpinner = document.createElement("span");
+            loadingSpinner.className = "cargando-agregar";
+            agregarCarrito.textContent = "";
+            agregarCarrito.appendChild(loadingSpinner);
+        }
+
+        const alertaStock = document.createElement("p");
+        alertaStock.className = "alerta-stock";
+        alertaStock.textContent = data.stock <= 5 && data.stock > 0 ? `¡Últimas ${data.stock} unidades disponibles!` : "";
+
+        const tituloDescripcion = document.createElement("h3");
+        tituloDescripcion.textContent = "Descripción";
+        tituloDescripcion.className = "titulo-descripcion";
+
+        const descripcion = document.createElement("p");
+        descripcion.textContent = data.overview;
+        descripcion.className = "descripcion-producto";
+        
+        div.appendChild(imagen);
+        div.appendChild(detalle);
+        detalle.appendChild(titulo);
+        detalle.appendChild(precio);
+        detalle.appendChild(stock);
+        detalle.appendChild(contenedorAgregar);
+        detalle.appendChild(alertaStock);
+        detalle.appendChild(tituloDescripcion);
+        detalle.appendChild(descripcion);
+        contenedorAgregar.appendChild(agregarCarrito);
         cargando.style.display = "none"
 
     } catch (err) {

@@ -26,7 +26,7 @@
                     </a>
                     <ul class="ul-left-menu">
                         <li>Inicio</li>
-                        <li>Productos</li>
+                        <li>Plantas</li>
                     </ul>
                 </div>
                 <div class = "right-menu">
@@ -50,15 +50,15 @@
 
     </main>
     <script type="module" >
-        import {supabase} from "./db/supabase.js"
+        import { supabase } from "./db/supabase.js"
 
-        async function conseguirProductos (){
-            const {data, error} = await supabase.from('productos').select('*')
+        async function conseguirProductos () {
+            const { data, error } = await supabase.from('productos').select('*')
             console.log(data)
             const productosDiv = document.getElementById('Productos')
-            for (let producto of data){
+            for ( let producto of data ){
                 const link = document.createElement('a')
-                link.href = `/detalle.html?producto=${producto.slug}`
+                link.href = `/detalle.html?planta=${producto.slug}`
 
                 const celda = document.createElement('div')
                 //rescate imagen
