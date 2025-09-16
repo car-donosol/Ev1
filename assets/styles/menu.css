@@ -51,3 +51,31 @@
 .ul-right-menu li {
     cursor: pointer;
 }
+
+.menu-mobile {
+    display: none;
+    cursor: pointer;
+    padding-right: .700rem;
+}
+
+@media (max-width: 850px) {
+    .alerta {
+        font-size: 0.8em;
+        padding: 1rem;
+        gap: 5px;
+    }
+    .menu {
+        padding: 15px 0px;
+    }
+
+    .menu-mobile {
+        display: block;
+    }
+    .ul-left-menu {
+        display: none;
+    }
+
+    .ul-right-menu {
+        display: none;
+    }
+}

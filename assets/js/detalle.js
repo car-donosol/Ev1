@@ -44,6 +44,9 @@ async function producto(id) {
         titulo.className = "titulo-detalle";
         titulo.textContent = data.name;
 
+        const contenedorInfo = document.createElement("div");
+        contenedorInfo.className = "contenedor-info";
+
         const precio = document.createElement("p");
         precio.textContent = `$${formatearMoneda(data.price)}`;
         precio.className = "precio-detalle";
@@ -52,6 +55,9 @@ async function producto(id) {
         stock.textContent = data.stock > 0 ? "Disponible" : "Agotado";
         stock.className = data.stock > 0 ? "stock-disponible" : "stock-agotado";
 
+        contenedorInfo.appendChild(precio);
+        contenedorInfo.appendChild(stock);
+
         const contenedorAgregar = document.createElement("div");
         contenedorAgregar.className = "contenedor-agregar";
 
@@ -59,18 +65,35 @@ async function producto(id) {
         agregarCarrito.textContent = "Agregar al carrito";
         agregarCarrito.className = data.stock > 0 ? "btn-agregar" : "btn-agregar-disabled";
         agregarCarrito.disabled = data.stock <= 0;
-        
+
         agregarCarrito.onclick = () => {
             agregarCarrito.className = "btn-agregar-cargando";
             const loadingSpinner = document.createElement("span");
             loadingSpinner.className = "cargando-agregar";
             agregarCarrito.textContent = "";
             agregarCarrito.appendChild(loadingSpinner);
+
+            let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+            const productoEnCarrito = carrito.find(item => item.id === data.id);
+            if (productoEnCarrito) {
+                productoEnCarrito.cantidad += 1;
+            } else {
+                carrito.push({ id: data.id, cantidad: 1 });
+            }
+
+            localStorage.setItem("carrito", JSON.stringify(carrito));
+
+            setTimeout(() => {
+                agregarCarrito.className = "btn-agregar";
+                agregarCarrito.textContent = "Agregar al carrito";
+                window.location.href = "carrito.html";
+            }, 1000);
         }
 
         const alertaStock = document.createElement("p");
         alertaStock.className = "alerta-stock";
-        alertaStock.textContent = data.stock <= 5 && data.stock > 0 ? `¡Últimas ${data.stock} unidades disponibles!` : "";
+        alertaStock.textContent = data.stock > 0 && data.stock <= 5 ? (data.stock === 1 ? "¡Última unidad disponible!" : `¡Últimas ${data.stock} unidades disponibles!`) : "";
 
         const tituloDescripcion = document.createElement("h3");
         tituloDescripcion.textContent = "Descripción";
@@ -83,8 +106,7 @@ async function producto(id) {
         div.appendChild(imagen);
         div.appendChild(detalle);
         detalle.appendChild(titulo);
-        detalle.appendChild(precio);
-        detalle.appendChild(stock);
+        detalle.appendChild(contenedorInfo);
         detalle.appendChild(contenedorAgregar);
         detalle.appendChild(alertaStock);
         detalle.appendChild(tituloDescripcion);
