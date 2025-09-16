@@ -3,7 +3,7 @@ export async function getSession(supabase) {
     const refreshToken = localStorage.getItem('refresh-token');
 
     if (!refreshToken) {
-        window.location.href = '/login.html';
+        window.location.href = '../../login.html';
         return null;
     }
 
@@ -22,18 +22,22 @@ export async function getSession(supabase) {
                 refresh_token: refreshToken,
             });
 
-            if (error) throw error;
+            if (error) {
+                localStorage.removeItem('access-token');
+                localStorage.removeItem('refresh-token');
+                window.location.href = '../../login.html';
+            };
 
             session = data.session;
+
+            console.log('Sesión refrescada:', session);
             
             localStorage.setItem('access-token', JSON.stringify({
                 token: session.access_token,
                 expiresAt: Date.now() + (session.expires_in * 1000)
             }));
             
-            if (session.refresh_token !== refreshToken) {
-                localStorage.setItem('refresh-token', session.refresh_token);
-            }
+            localStorage.setItem('refresh-token', session.refresh_token);
 
             console.log('Sesión refrescada exitosamente');
         }

@@ -68,6 +68,10 @@
         padding: 15px 0px;
     }
 
+    .logo-text {
+        font-size: 1.3rem;
+    }
+
     .menu-mobile {
         display: block;
     }
