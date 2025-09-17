@@ -2,7 +2,8 @@ import { supabase } from '../../db/supabase.js'
 import { urlBase } from "../../utils/urlBase.js";
 
 if(localStorage.getItem('refresh-token')) {
-    window.location.href = `${urlBase}/cuenta.html`;
+    console.log(`${urlBase}/cuenta`);
+  
 }
 
 async function register() {
