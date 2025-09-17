@@ -1,9 +1,11 @@
+import { urlBase } from '../../utils/urlBase.js';
+
 export async function getSession(supabase) {
     const accessTokenData = JSON.parse(localStorage.getItem('access-token'));
     const refreshToken = localStorage.getItem('refresh-token');
 
     if (!refreshToken) {
-        window.location.href = '../../login.html';
+        window.location.href = `${urlBase()}/login.html`;
         return null;
     }
 
@@ -25,7 +27,7 @@ export async function getSession(supabase) {
             if (error) {
                 localStorage.removeItem('access-token');
                 localStorage.removeItem('refresh-token');
-                window.location.href = '../../login.html';
+                window.location.href = `${urlBase()}/login.html`;
             };
 
             session = data.session;

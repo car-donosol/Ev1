@@ -1,5 +1,6 @@
 import { supabase } from '../../db/supabase.js';
 import { getSession } from '../../assets/js/getSession.js';
+import { urlBase } from "../../utils/urlBase.js";
 
 const session = await getSession(supabase);
 await supabase.auth.setSession(session);
@@ -26,7 +27,7 @@ async function user() {
         if (userRol.rol === 'admin') {
             const sidemenuUl = document.getElementById('sidemenu-ul');
             const adminLink = document.createElement('a');
-            adminLink.href = '/panel';
+            adminLink.href = `${urlBase()}/admin`;
             adminLink.innerHTML = '<li class="sidemenu-li">Panel de control</li>';
             sidemenuUl.insertBefore(adminLink, sidemenuUl.firstChild);
         }
@@ -111,7 +112,7 @@ async function logout() {
 
         localStorage.removeItem('access-token');
         localStorage.removeItem('refresh-token');
-        window.location.href = '/login.html';
+        window.location.href = `${urlBase()}/login.html`;
 
     } catch (error) {
         console.error('Error al cerrar sesión:', error.message);
