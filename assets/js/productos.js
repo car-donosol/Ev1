@@ -1,4 +1,5 @@
 import { supabase } from "../../db/supabase.js"
+import { urlBase } from "../../utils/urlBase.js"
 
 async function conseguirProductos() {
     const { data, error } = await supabase.from('productos').select('*')
@@ -7,7 +8,7 @@ async function conseguirProductos() {
     
     for (let producto of data) {
         const link = document.createElement('a')
-        link.href = `detalle.html?planta=${producto.slug}`
+        link.href = `${urlBase()}/detalle.html?planta=${producto.slug}`
         link.className = "celda-producto"
         const celda = document.createElement('div')
         //rescate imagen
