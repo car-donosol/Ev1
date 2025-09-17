@@ -48,36 +48,39 @@
         </header>
 
         <section class="login-container">
-            <h1>Crear cuenta</h1>
+            <h1 class="title">Crear cuenta</h1>
 
             <span id="error" class="error"></span>
 
             <form class="form" id="registerForm">
                 <label class="label">NOMBRE</label>
-                <input type="text" id="name" required/>
+                <input class="input" type="text" id="name" required/>
 
                 <label class="label">CORREO ELECTRONICO</label>
-                <input type="email" id="email" required/>
+                <input class="input" type="email" id="email" required/>
 
                 <label class="label">CONTRASENIA</label>
-                <div>
-                    <input id="pass" type="password" required/>
-                    <button type="button" onclick="showPass()">VER</button>
+                <div class="password-container">
+                    <input class="input" id="pass" type="password" required/>
+                    <button type="button" class="btnMostrar" onclick="showPass()"></button>
                 </div>
 
-                <button type="submit">CREAR CUENTA</button>
+                <button class="btnLogin" type="submit">CREAR CUENTA</button>
             </form>
         </section>
     </main>
 
-     <script>
+    <script>
         function showPass() {
             const pass = document.getElementById("pass")
+            const btn = document.querySelector(".btnOcultar") || document.querySelector(".btnMostrar")
             
             if(pass.type == "password") {
                 pass.type = "text"
+                btn.className = "btnOcultar"
             } else {
                 pass.type = "password"
+                btn.className = "btnMostrar"
             }
         }
     </script>

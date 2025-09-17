@@ -126,7 +126,6 @@
     }
 }
 
-
 .alerta-stock {
     margin-top: 10px;
     color: #d32f2f;
@@ -199,54 +198,6 @@
     background-color: transparent;
     color: #0a6b20;
     transition: all 0.3s ease-in-out;
-}
-
-/* Contenedor de los botones */
-.tns-controls {
-    display: flex;
-    justify-content: space-between;
-    position: absolute;
-    /* para superponer sobre el slider */
-    top: 50%;
-    width: 100%;
-    transform: translateY(-50%);
-    pointer-events: none;
-    /* evitar bloquear clicks en el slider */
-    z-index: 10;
-}
-
-/* Botones prev/next */
-.tns-controls button {
-    pointer-events: all;
-    /* habilitar clicks */
-    background-color: rgba(0, 0, 0, 0.5);
-    border: none;
-    color: white;
-    font-size: 18px;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.tns-controls button:hover {
-    background-color: rgba(0, 0, 0, 0.8);
-}
-
-/* Opcional: iconos más grandes o flechas */
-.tns-controls button::before {
-    content: '';
-    /* Si quieres puedes usar flechas CSS o emojis */
-}
-
-/* Para mover los botones un poco fuera del slider */
-.tns-controls button[data-controls="prev"] {
-    margin-left: 5px;
-}
-
-.tns-controls button[data-controls="next"] {
-    margin-right: 5px;
 }
 
 .tns-nav {

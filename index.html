@@ -44,10 +44,7 @@
             </nav>
         </header>
 
-        <div id="Productos" class="container-productos">
-            <!-- Productos se cargan aqui -->
-
-        </div>
+        <div id="Productos" class="container-productos"></div>
 
     </main>
     <script type="module" >
@@ -60,7 +57,7 @@
             for (let producto of data){
 
                 const link = document.createElement('a')
-                link.href = `/detalle.html?producto=${producto.slug}`
+                link.href = `/detalle.html?planta=${producto.slug}`
                 link.className = "celda-producto"
                 const celda = document.createElement('div')
                 //rescate imagen

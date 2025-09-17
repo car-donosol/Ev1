@@ -1,0 +1,136 @@
+.carrito-header {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.carrito-header.full {
+    height: 60dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.titulo-carrito {
+    font-size: 2.5rem;
+    font-weight: 500;
+    letter-spacing: .050em;
+}
+
+.subtitulo-carrito {
+    font-size: 1.1rem;
+    margin-top: 6px;
+    color: #3b3b3b;
+}
+
+.carrito-container {
+    margin-top: 50px;
+}
+
+.link-explorar {
+    color: #0a6b21;
+    text-decoration: underline;
+    font-weight: 500;
+}
+
+.container-producto {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.container-imagen {
+    display: flex;
+    gap: 15px;
+}
+
+.producto-img {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    margin-right: 15px;
+}
+
+.title-producto {
+    font-size: 1.3em;
+    font-weight: 400;
+    letter-spacing: .050rem;
+}
+
+.precio-producto {
+    font-size: 1.150em;
+    font-weight: 600;
+    color: #0a6b21;
+}
+
+.btn-sumar,
+.btn-restar {
+    border: none;
+    background: transparent;
+    font-size: 1.2rem;
+    padding: 0.3rem 0.6rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.span-cantidad {
+    display: inline-block;
+    min-width: 30px;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+.contenedor-cantidad {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 0.2rem 0.4rem;
+    margin-top: 10px;
+}
+
+.bottom-container {
+    display: flex;
+    justify-content: right;
+    margin: 30px 0;
+}
+
+.btn-finalizar-compra {
+    background-color: #0a6b21;
+    color: white;
+    border: none;
+    padding: .800rem 1.5rem;
+    font-size: 1em;
+    letter-spacing: .130rem;
+    cursor: pointer;
+}
+
+.btn-finalizar-compra:hover {
+    background-color: #ffffff;
+    color: #0a6b21;
+    border: 2px solid #0a6b21;
+    transition: all 0.3s ease-in-out;
+}
+
+@media (max-width: 850px) {
+    .titulo-carrito {
+        font-size: 2rem;
+    }
+
+    .container-imagen {
+        margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 450px) {
+    .producto-img {
+        width: 80px;
+        height: 80px;
+    }
+
+    .btn-finalizar-compra {
+        width: 100%;
+        margin-top: 2rem;
+    }
+}

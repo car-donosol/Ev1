@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tu Carrito - Huertabeja</title>
+    <link rel="icon" type="image/x-icon" href="./assets/img/logo.png">
+    <link rel="stylesheet" href="./assets/styles/global.css">
+    <link rel="stylesheet" href="./assets/styles/menu.css">
+    <link rel="stylesheet" href="./assets/styles/carrito.css">
+</head>
+
+<body>
+    <div class="alerta">
+        <p>DESPACHO TODO SANTIAGO</p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"
+            class="icon icon-tabler icons-tabler-filled icon-tabler-truck">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path
+                d="M13 4a1 1 0 0 1 1 1h4a1 1 0 0 1 .783 .378l.074 .108l3 5l.055 .103l.04 .107l.029 .109l.016 .11l.003 .085v6a1 1 0 0 1 -1 1h-1.171a3.001 3.001 0 0 1 -5.658 0h-4.342a3.001 3.001 0 0 1 -5.658 0h-1.171a1 1 0 0 1 -1 -1v-11a2 2 0 0 1 2 -2zm-6 12a1 1 0 1 0 0 2a1 1 0 0 0 0 -2m10 0a1 1 0 1 0 0 2a1 1 0 0 0 0 -2m.434 -9h-3.434v3h5.234z" />
+        </svg>
+    </div>
+    <main class="container">
+        <header>
+            <nav class="menu">
+                <div class="left-menu">
+                    <a href="index.html" class="logo-container">
+                        <img src="assets/img/logo.png" width="40px" height="40px" alt="logo de huertabeja">
+                        <h1 class="logo-text">
+                            Huertabeja
+                        </h1>
+                    </a>
+                    <ul class="ul-left-menu">
+                        <li>Inicio</li>
+                        <li>Plantas</li>
+                    </ul>
+                </div>
+
+                <div class="right-menu">
+                    <div class="menu-mobile">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                            class="icon icon-tabler icons-tabler-outline icon-tabler-menu">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M4 8l16 0" />
+                            <path d="M4 16l16 0" />
+                        </svg>
+                    </div>
+                    <ul class="ul-right-menu">
+                        <a href="login.html">
+                            <li>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+                                    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                                </svg>
+                            </li>
+                        </a>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="icon icon-tabler icons-tabler-outline icon-tabler-shopping-bag">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path
+                                    d="M6.331 8h11.339a2 2 0 0 1 1.977 2.304l-1.255 8.152a3 3 0 0 1 -2.966 2.544h-6.852a3 3 0 0 1 -2.965 -2.544l-1.255 -8.152a2 2 0 0 1 1.977 -2.304z" />
+                                <path d="M9 11v-5a3 3 0 0 1 6 0v5" />
+                            </svg>
+                        </li>
+                    </ul>
+
+                </div>
+            </nav>
+        </header>
+
+        <div class="carrito-header" id="carrito-header">
+            <h1 class="titulo-carrito">Carrito de compra</h1>
+            <p class="subtitulo-carrito" style="color: #000000;" id="carrito-vacio">Tu carrito de compras esta vacío.
+            </p>
+            <p class="subtitulo-carrito">Continúe explorando nuestros productos <a href="./index.html"
+                    class="link-explorar">aquí</a>.</p>
+        </div>
+
+        <section class="carrito-container" id="carrito-container">
+        </section>
+    </main>
+
+    <script type="module">
+        import { supabase } from './db/supabase.js';
+
+        function formatearMoneda(numero) {
+            return new Intl.NumberFormat('es-CL').format(numero);
+        }
+
+        const carritoContainer = document.getElementById('carrito-container');
+
+        async function conseguirProductos() {
+            const cart = JSON.parse(localStorage.getItem('carrito')) || [];
+            const carritoHeader = document.getElementById('carrito-header');
+            const carritoVacio = document.getElementById('carrito-vacio');
+
+            if (!cart || cart.length === 0) {
+                carritoHeader.classList.add('full');
+                return;
+            }
+
+            carritoHeader.classList.remove('full');
+            carritoContainer.style.display = 'block';
+            carritoVacio.style.display = 'none';
+
+            const { data: products, error } = await supabase
+                .from('productos')
+                .select('*')
+                .in('id', cart.map(item => item.id));
+
+            for (let p of products) {
+                const cantidad = cart ? cart.find(i => i.id === p.id).cantidad : 1;
+                const containerProducto = document.createElement('div');
+                containerProducto.className = 'container-producto';
+
+                const containerImagen = document.createElement('div');
+                containerImagen.className = 'container-imagen';
+
+                const productoImg = document.createElement('img');
+                productoImg.src = p.image;
+                productoImg.alt = p.name;
+                productoImg.className = 'producto-img';
+
+                const containerInfo = document.createElement('div');
+                containerInfo.className = 'container-info';
+
+                const titleProducto = document.createElement('p');
+                titleProducto.className = 'title-producto';
+                titleProducto.textContent = p.name;
+
+                const contenedorCantidad = document.createElement('div');
+                contenedorCantidad.className = 'contenedor-cantidad';
+
+                const restarUnItem = document.createElement('button');
+                restarUnItem.className = 'btn-restar';
+                restarUnItem.textContent = '-';
+
+                const spanCantidad = document.createElement('span');
+                spanCantidad.className = 'span-cantidad';
+                spanCantidad.textContent = cantidad;
+
+                const sumarUnItem = document.createElement('button');
+                sumarUnItem.className = 'btn-sumar';
+                sumarUnItem.textContent = '+';
+
+                if (cantidad >= p.stock) {
+                    sumarUnItem.disabled = true;
+                    sumarUnItem.classList.add('disabled');
+                }
+
+                restarUnItem.onclick = () => {
+                    let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+                    const index = carrito.findIndex(item => item.id === p.id);
+                    if (index !== -1) {
+                        if (carrito[index].cantidad > 1) {
+                            carrito[index].cantidad -= 1;
+                        } else {
+                            carrito.splice(index, 1);
+                        }
+                        localStorage.setItem('carrito', JSON.stringify(carrito));
+                        location.reload();
+                    }
+                };
+
+                sumarUnItem.onclick = () => {
+                    let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+                    const index = carrito.findIndex(item => item.id === p.id);
+
+                    if (index !== -1) {
+                        if (carrito[index].cantidad < p.stock) {
+                            carrito[index].cantidad += 1;
+                            localStorage.setItem('carrito', JSON.stringify(carrito));
+                            location.reload();
+                        } else {
+                            sumarUnItem.disabled = true;
+                            sumarUnItem.classList.add('disabled');
+                        }
+                    }
+                };
+
+                const precioProducto = document.createElement('p');
+                precioProducto.className = 'precio-producto';
+                precioProducto.textContent = `$${formatearMoneda(p.price * cantidad)}`;
+
+                containerImagen.appendChild(productoImg);
+                containerImagen.appendChild(containerInfo);
+                containerInfo.appendChild(titleProducto);
+                contenedorCantidad.appendChild(restarUnItem);
+                contenedorCantidad.appendChild(spanCantidad);
+                contenedorCantidad.appendChild(sumarUnItem);
+                containerInfo.appendChild(contenedorCantidad);
+                containerProducto.appendChild(containerImagen);
+                containerProducto.appendChild(precioProducto);
+                carritoContainer.appendChild(containerProducto);
+
+                console.log({
+                    id: p.id,
+                    name: p.name,
+                    image: p.image,
+                    price: p.price,
+                    stock: p.stock,
+                    cantidad
+                });
+            }
+        }
+
+        conseguirProductos();
+
+        if(JSON.parse(localStorage.getItem('carrito')).length > 0) {
+            const bottomContainer = document.createElement('div');
+            bottomContainer.className = 'bottom-container';
+
+            const btnFinalizarCompra = document.createElement('button');
+            btnFinalizarCompra.className = 'btn-finalizar-compra';
+            btnFinalizarCompra.textContent = 'Finalizar Compra';
+
+            btnFinalizarCompra.onclick = () => {
+                if(!JSON.parse(localStorage.getItem('refresh-token'))) {
+                    window.location.href = './login.html';
+                }
+            };
+
+            bottomContainer.appendChild(btnFinalizarCompra);
+            carritoContainer.parentNode.appendChild(bottomContainer);
+            }
+    </script>
+
+</body>
+
+</html>

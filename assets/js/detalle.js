@@ -12,6 +12,7 @@ if (!url.has("planta")) {
 const slug = url.get("planta");
 
 const cargando = document.getElementById("cargando")
+const masProductos = document.getElementById("mas-productos")
 
 if (!slug) {
     noencontrado()
@@ -117,6 +118,7 @@ async function producto(id) {
         detalle.appendChild(descripcion);
         contenedorAgregar.appendChild(agregarCarrito);
         cargando.style.display = "none"
+        masProductos.style.display = "block"
 
     } catch (err) {
         console.error("Error al obtener el producto:", err);
@@ -195,7 +197,7 @@ async function productosSugeridos() {
         items: 1,
         slideBy: 'page',
         autoplay: true,
-        controls: true,
+        controls: false,
         autoplayTimeout: 6000,
         mouseDrag: true,
         gutter: 5,
