@@ -1,4 +1,6 @@
 import { supabase } from '../../db/supabase.js';
+import { getSession } from '../../assets/js/getSession.js';
+
 
 function formatearMoneda(numero) {
     return new Intl.NumberFormat('es-CL').format(numero);
@@ -121,29 +123,103 @@ async function conseguirProductos() {
     }
 }
 
-async function crearBotonPago() {
-
-}
-
 conseguirProductos();
 
 if (JSON.parse(localStorage.getItem('carrito')).length > 0) {
     const bottomContainer = document.createElement('div');
     bottomContainer.className = 'bottom-container';
 
+    const totalCompra = document.createElement('div');
+    totalCompra.className = 'total-compra';
+    const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+    let total = 0;
+    for (let item of carrito) {
+        const { data: products, error } = await supabase
+            .from('productos')
+            .select('*')
+            .eq('id', item.id)
+            .single();
+        if (products) {
+            total += products.price * item.cantidad;
+        }
+    }
+    totalCompra.textContent = `Total: $${formatearMoneda(total)}`;
+    bottomContainer.appendChild(totalCompra);
+
+    const btnContent = document.createElement('div');
+    btnContent.className = 'btn-content';
+
+
     const btnFinalizarCompra = document.createElement('button');
     btnFinalizarCompra.className = 'btn-finalizar-compra';
     btnFinalizarCompra.textContent = 'Finalizar Compra';
 
     btnFinalizarCompra.onclick = async () => {
-        if (!localStorage.getItem('refresh-token')) {
-            window.location.href = './login.html';
-        } else {
-            localStorage.setItem("carrito", JSON.stringify([]));
-            window.location.href = './pago-completado.html';
+        try {
+            const cargando = document.createElement('div');
+            cargando.className = 'cargando';
+            btnFinalizarCompra.disabled = true;
+            btnFinalizarCompra.classList.add('disabled');
+            btnFinalizarCompra.textContent = '';
+            btnFinalizarCompra.appendChild(cargando)
+
+            if (!localStorage.getItem('refresh-token')) {
+                window.location.href = './login.html';
+                return;
+            };
+
+            const sesion = await getSession(supabase);
+            await supabase.auth.setSession(sesion);
+            const { data: { user } } = await supabase.auth.getUser();
+
+            const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            if (carrito.length === 0) {
+                console.log('El carrito está vacío');
+                return;
+            }
+
+            const datosCompra = {
+                userId: user.id,
+                products: carrito.map(producto => ({
+                    id: producto.id,
+                    cantidad: producto.cantidad
+                }))
+            };
+
+            const respuesta = await fetch('https://api-pago.akongamer14.workers.dev/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(datosCompra)
+            });
+
+            const resultado = await respuesta.json();
+
+            if (resultado.error) {
+                btnFinalizarCompra.disabled = false;
+                btnFinalizarCompra.classList.remove('disabled');
+                btnFinalizarCompra.textContent = 'Finalizar Compra';
+
+                const divError = document.createElement('div');
+                divError.className = 'error-compra';
+                divError.textContent = resultado.error;
+                bottomContainer.appendChild(divError);
+
+            } else {
+                console.log(resultado.data);
+                const payLinks = JSON.parse(localStorage.getItem('payLink')) || [];
+                payLinks.push({ id: resultado.id, url: resultado.url });
+                localStorage.setItem('payLink', JSON.stringify(payLinks));
+                window.location.href = resultado.url;
+            }
+
+        } catch (error) {
+            console.error('Error al finalizar la compra:', error);
         }
     };
 
-    bottomContainer.appendChild(btnFinalizarCompra);
+    btnContent.appendChild(btnFinalizarCompra);
+    bottomContainer.appendChild(btnContent);
     carritoContainer.parentNode.appendChild(bottomContainer);
 }

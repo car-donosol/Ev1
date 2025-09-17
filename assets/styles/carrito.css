@@ -92,8 +92,16 @@
 
 .bottom-container {
     display: flex;
+    flex-direction: column;
+    align-items: flex-end;
     justify-content: right;
     margin: 30px 0;
+}
+
+.total-compra {
+    font-size: 1.2em;
+    font-weight: 600;
+    margin-bottom: 10px;
 }
 
 .btn-finalizar-compra {
@@ -113,6 +121,51 @@
     transition: all 0.3s ease-in-out;
 }
 
+.btn-finalizar-compra:disabled {
+    width: 190.40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: not-allowed;
+}
+
+.btn-finalizar-compra:disabled:hover {
+   background-color: #0a6b21;
+    color: white;
+    border: none;
+}
+
+.error-compra {
+    background-color: rgb(255, 203, 203);
+    border: 2px solid #d32f2f;
+    color: #d32f2f;
+    padding: 8px 12px;
+    width: 500px;
+    margin-top: 5px;
+    margin-bottom: 20px;
+    line-height: 1.5rem;
+}
+
+.cargando {
+    border: 2px solid #949494;
+    border-top: 2px solid #fff;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spiner 1s linear infinite;
+}
+
+@keyframes spiner {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
 @media (max-width: 850px) {
     .titulo-carrito {
         font-size: 2rem;
@@ -120,6 +173,25 @@
 
     .container-imagen {
         margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 600px) {
+    .btn-content {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+    .btn-finalizar-compra {
+        width: 100%;
+    }
+    .btn-finalizar-compra:disabled {
+        width: 100%;
+    }
+    .error-compra {
+        width: 100%;
     }
 }
 

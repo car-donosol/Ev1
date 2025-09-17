@@ -1,0 +1,18 @@
+.pago-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 60vh;
+}
+
+.pago-titulo {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.pago-enlace {
+    color: #0c8b00;
+    text-decoration: none;
+    font-weight: bold;
+}
