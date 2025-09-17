@@ -2,7 +2,7 @@ import { supabase } from '../../db/supabase.js'
 import { urlBase } from "../../utils/urlBase.js";
 
 if (localStorage.getItem('refresh-token')) {
-    window.location.href = urlBase + '/cuenta';
+    window.location.href = `${urlBase}/cuenta`;
 }
 
 async function login() {
@@ -41,7 +41,7 @@ async function login() {
             localStorage.removeItem('sb-ticfnujyxksjdfkwuoyk-auth-token')
             localStorage.setItem('access-token', JSON.stringify({ token: data.session?.access_token, expiresAt: caducidad }));
             localStorage.setItem('refresh-token', data.session?.refresh_token);
-            window.location.href = urlBase + '/cuenta';
+            window.location.href = `${urlBase}/cuenta`;
         }
     });
 }
