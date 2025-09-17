@@ -4,8 +4,34 @@
     border-radius: 10px;
 }
 
-.celdaprod{
+.container-productos{
     gap: 10px;
     display: flex;
     flex-wrap: wrap;
+}
+
+.celda-producto{
+    width: 250px;
+    height: 330px;
+    border: 1px solid #c9c9c9;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    color: black;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.btn-ver-producto{
+    border: 1px solid #0a6b20;
+    background-color: transparent;
+    padding: .30rem .30rem;
+    letter-spacing: rem;
+    cursor: pointer;
+    animation: wiggle 3.5s ease-in-out infinite;
+    border-radius: 3px;
+}
+.btn-ver-producto:hover {
+    background-color: #0a6b20;
+    color: white;
+    transition: all 0.3s ease-in-out;
 }

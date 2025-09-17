@@ -18,20 +18,20 @@
         <header>
             <nav class="menu">
                 <div class="left-menu">
-                    <a href="index.html" class="logo-container">
-                        <img src="assets/img/logo.png" width="40px" height="40px" alt="logo de huertabeja">
+                    <a href="/Ev1" class="logo-container">
+                        <source><img src="assets/img/logo.png" width="40px" height="40px" alt="logo de huertabeja"></source>
                         <h1 class="logo-text">
                             Huertabeja
                         </h1>
                     </a>
                     <ul class="ul-left-menu">
                         <li>Inicio</li>
-                        <li>Plantas</li>
+                        <li>Productos</li>
                     </ul>
                 </div>
                 <div class = "right-menu">
                     <ul class= "ul-right-menu">
-                        <a href="login.html">
+                        <a href="/login.html">
                             <li>
                                 <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-user"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /></svg>
                             </li>
@@ -44,22 +44,24 @@
             </nav>
         </header>
 
-        <div id="Productos" class="celdaprod">
-            <a href=""></a>
+        <div id="Productos" class="container-productos">
+            <!-- Productos se cargan aqui -->
+
         </div>
 
     </main>
     <script type="module" >
-        import { supabase } from "./db/supabase.js"
+        import {supabase} from "./db/supabase.js"
 
-        async function conseguirProductos () {
-            const { data, error } = await supabase.from('productos').select('*')
+        async function conseguirProductos (){
+            const {data, error} = await supabase.from('productos').select('*')
             console.log(data)
             const productosDiv = document.getElementById('Productos')
-            for ( let producto of data ){
-                const link = document.createElement('a')
-                link.href = `detalle.html?planta=${producto.slug}`
+            for (let producto of data){
 
+                const link = document.createElement('a')
+                link.href = `/detalle.html?producto=${producto.slug}`
+                link.className = "celda-producto"
                 const celda = document.createElement('div')
                 //rescate imagen
                 const img = document.createElement('img')
@@ -73,8 +75,14 @@
 
                 //rescate precio
                 const precio = document.createElement('h4')
-                precio.textContent = producto.price
+                precio.textContent = "$"+producto.price
                 
+                //agregar boton
+                const boton = document.createElement('button')
+                boton.textContent = "ver producto"
+                boton.className = "btn-ver-producto"
+                boton.href = `/detalle.html?producto=${producto.slug}`
+
 
 
                 //pasar variables a etiqueta div
@@ -82,8 +90,10 @@
                 celda.appendChild(img)
                 div.appendChild(titulo)
                 div.appendChild(precio)
-                celda.appendChild(div)
                 productosDiv.appendChild(link)
+                div.appendChild(boton)
+                celda.appendChild(div)
+                
 
                 
             }
