@@ -13,7 +13,7 @@ const payLinks = JSON.parse(localStorage.getItem('payLink')) || [];
 const linkEncontrado = payLinks.find(link => link.id === id);
 
 const a = document.getElementById('mis-pedidos');
-a.href = `${urlBase()}/cuenta/mis-pedidos.html`;
+a.href = `${urlBase()}/cuenta/pedidos.html`;
 
 if (linkEncontrado) {
     const nuevosPayLinks = payLinks.filter(link => link.id !== id);
