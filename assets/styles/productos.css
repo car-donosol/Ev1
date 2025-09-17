@@ -7,6 +7,8 @@
 .container-productos{
     gap: 10px;
     display: flex;
+    justify-content: center;
+    align-items: center;
     flex-wrap: wrap;
 }
 
