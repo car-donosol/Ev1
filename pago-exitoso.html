@@ -36,38 +36,6 @@
     </main>
     <script src="./assets/js/menu.js" type="module"></script>
     <script src="./assets/js/pago-exitoso.js" type="module"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.min.js"></script>
-<script>
-    window.addEventListener('load', () => {
-        // Función para lanzar confetti desde un lado
-        function lanzarConfetti(origenX) {
-            confetti({
-                particleCount: 200,
-                spread: 120,
-                startVelocity: 45,
-                origin: { x: origenX, y: 0 },
-                colors: ['#ff0a54', '#ff477e', '#ff85a1', '#fbb1bd', '#f9bec7', '#00bbf9', '#00f5d4']
-            });
-        }
-
-        // Lanzar confetti desde la izquierda
-        lanzarConfetti(0);
-
-        // Lanzar confetti desde la derecha, con un pequeño retraso
-        setTimeout(() => lanzarConfetti(1), 300);
-
-        // Repetir unas veces para que dure más
-        let repeticiones = 3;
-        let intervalo = setInterval(() => {
-            lanzarConfetti(0);
-            lanzarConfetti(1);
-            repeticiones--;
-            if (repeticiones <= 0) clearInterval(intervalo);
-        }, 700);
-    });
-</script>
-
 </body>
 
 </html>
