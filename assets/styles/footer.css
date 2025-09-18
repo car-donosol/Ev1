@@ -1,0 +1,33 @@
+.footer-content {
+    margin-top: 70px;
+    text-align: center;
+    padding: 20px;
+    background-color: #0a6b20;
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.socials {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.socials-li {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding: 10px;
+    background-color: #084d15;
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.9em;
+}
