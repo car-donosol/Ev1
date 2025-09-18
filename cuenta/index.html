@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +10,8 @@
     <link rel="stylesheet" href="../assets/styles/menu.css">
     <link rel="stylesheet" href="../assets/styles/sidemenu.css">
     <link rel="stylesheet" href="../assets/styles/cuenta.css">
-
+    <link rel="stylesheet" href="./assets/styles/footer.css">
+    
     <style>
         .cargando {
             border: 4px solid #f3f3f3;
@@ -22,17 +24,24 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="alerta">
         <p>DESPACHO TODO SANTIAGO</p>
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-            <path d="M13 4a1 1 0 0 1 1 1h4a1 1 0 0 1 .783 .378l3 5v6a1 1 0 0 1 -1 1h-1.171a3 3 0 0 1 -5.658 0h-4.342a3 3 0 0 1 -5.658 0h-1.171a1 1 0 0 1 -1 -1v-11a2 2 0 0 1 2 -2zm-6 12a1 1 0 1 0 0 2a1 1 0 0 0 0 -2m10 0a1 1 0 1 0 0 2a1 1 0 0 0 0 -2"/>
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path
+                d="M13 4a1 1 0 0 1 1 1h4a1 1 0 0 1 .783 .378l3 5v6a1 1 0 0 1 -1 1h-1.171a3 3 0 0 1 -5.658 0h-4.342a3 3 0 0 1 -5.658 0h-1.171a1 1 0 0 1 -1 -1v-11a2 2 0 0 1 2 -2zm-6 12a1 1 0 1 0 0 2a1 1 0 0 0 0 -2m10 0a1 1 0 1 0 0 2a1 1 0 0 0 0 -2" />
         </svg>
     </div>
 
@@ -53,18 +62,21 @@
                     <ul class="ul-right-menu">
                         <a href="../login.html">
                             <li>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"/>
-                                    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+                                    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
                                 </svg>
                             </li>
                         </a>
                         <li>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                <path d="M6.331 8h11.339a2 2 0 0 1 1.977 2.304l-1.255 8.152a3 3 0 0 1 -2.966 2.544h-6.852a3 3 0 0 1 -2.965 -2.544l-1.255 -8.152a2 2 0 0 1 1.977 -2.304z"/>
-                                <path d="M9 11v-5a3 3 0 0 1 6 0v5"/>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path
+                                    d="M6.331 8h11.339a2 2 0 0 1 1.977 2.304l-1.255 8.152a3 3 0 0 1 -2.966 2.544h-6.852a3 3 0 0 1 -2.965 -2.544l-1.255 -8.152a2 2 0 0 1 1.977 -2.304z" />
+                                <path d="M9 11v-5a3 3 0 0 1 6 0v5" />
                             </svg>
                         </li>
                     </ul>
@@ -108,6 +120,9 @@
             </div>
         </section>
     </main>
+    <footer id="footer"></footer>
+    <script src="./assets/js/footer.js" type="module"></script>
     <script type="module" src="../assets/js/cuenta.js"></script>
 </body>
+
 </html>
