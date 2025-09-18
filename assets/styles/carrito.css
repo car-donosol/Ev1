@@ -74,6 +74,24 @@
     user-select: none;
 }
 
+.btn-eliminar {
+    margin-left: 15px;
+    border: 1px solid #d32f2f;
+    background: transparent;
+    font-size: 1.2rem;
+    padding: 0.3rem 0.6rem;
+    cursor: pointer;
+    user-select: none;
+    color: #d32f2f;
+    margin-top: 10px;
+    border-radius: 3px;
+}
+.btn-eliminar:hover {
+    background-color: #d32f2f;
+    color: white;
+    transition: all 0.3s ease-in-out;
+}
+
 .span-cantidad {
     display: inline-block;
     min-width: 30px;
@@ -89,6 +107,12 @@
     padding: 0.2rem 0.4rem;
     margin-top: 10px;
 }
+
+.contenedor-eliminar {
+    align-items: center;
+    margin-top: 10px;
+}
+
 
 .bottom-container {
     display: flex;
@@ -117,7 +141,7 @@
 .btn-finalizar-compra:hover {
     background-color: #ffffff;
     color: #0a6b21;
-    border: 2px solid #0a6b21;
+    border: 1px solid #0a6b21;
     transition: all 0.3s ease-in-out;
 }
 

@@ -27,7 +27,7 @@ async function conseguirProductos() {
 
         //agregar boton
         const boton = document.createElement('button')
-        boton.textContent = "ver producto"
+        boton.textContent = "Ver producto"
         boton.className = "btn-ver-producto"
         boton.href = `/detalle.html?producto=${producto.slug}`
 
