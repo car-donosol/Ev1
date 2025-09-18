@@ -16,7 +16,9 @@ async function conseguirPedidos() {
     const pedidosDiv = document.getElementById('pedidos');
 
     if (orders.length === 0) {
-        pedidosDiv.innerHTML = '<p>No tienes pedidos aún.</p>';
+        cargando.style.display = 'none';
+        pedidosDiv.innerHTML = '<div class="container-empty"><p>No tienes pedidos aún.</p></div>';
+        pedidosDiv.style.display = 'block';
         return;
     }
 
@@ -31,12 +33,19 @@ async function conseguirPedidos() {
             day: 'numeric'
         });
 
+        const statusMap = {
+            unpaid: "Sin Pagar",
+            paid: "Pagado",
+            rejected: "Pago Rechazado"
+        };
+
+        const statusTexto = statusMap[order.status] || order.status;
+
         orderDiv.innerHTML = `
                     <h3>Pedido #${order.orderId}</h3>
                     <p>Fecha: ${formattedDate}</p>
                     <p>Total: $${order.total_price}</p>
-                    <p>Estado: ${order.status}</p>
-                    <hr>
+                    <p>Estado: ${statusTexto}</p>
                 `;
 
         pedidosDiv.appendChild(orderDiv);

@@ -27,7 +27,7 @@ async function user() {
         if (userRol.rol === 'admin') {
             const sidemenuUl = document.getElementById('sidemenu-ul');
             const adminLink = document.createElement('a');
-            adminLink.href = `${urlBase()}/panel.html`;
+            adminLink.href = `${urlBase()}/panel`;
             adminLink.innerHTML = '<li class="sidemenu-li">Panel de control</li>';
             sidemenuUl.insertBefore(adminLink, sidemenuUl.firstChild);
         }

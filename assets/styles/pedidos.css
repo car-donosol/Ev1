@@ -1,3 +1,12 @@
+.container-empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    font-size: 1.2em;
+    color: #555;
+}
+
 .content {
     display: flex;
     gap: 30px;
