@@ -1,6 +1,10 @@
 import { supabase } from "../../db/supabase.js"
 import { urlBase } from "../../utils/urlBase.js"
 
+function formatearMoneda(numero) {
+    return new Intl.NumberFormat('es-CL').format(numero);
+}
+
 async function conseguirProductos() {
     const { data, error } = await supabase.from('productos').select('*')
     console.log(data)
@@ -19,11 +23,13 @@ async function conseguirProductos() {
         const div = document.createElement('div')
         //rescate titulo
         const titulo = document.createElement('h3')
+        titulo.className = "titulo" 
         titulo.textContent = producto.name
 
         //rescate precio
-        const precio = document.createElement('h4')
-        precio.textContent = "$" + producto.price
+        const precio = document.createElement('p')
+        precio.className = "precio"
+        precio.textContent = "$" + formatearMoneda(producto.price)
 
         //agregar boton
         const boton = document.createElement('button')

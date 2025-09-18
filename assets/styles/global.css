@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -25,4 +25,45 @@ a {
     .container {
         padding: 0 10px;
     }
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 8px;
+    border-radius: 4px !important;
+}
+
+::-webkit-scrollbar-button {
+    width: 0px;
+    height: 0px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #14a335;
+    border: none;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #44dd68;
+}
+
+::-webkit-scrollbar-thumb:active {
+    background: #44dd68;
+}
+
+::-webkit-scrollbar-track {
+    background: none;
+    border: 0px none #ffffff;
+}
+
+::-webkit-scrollbar-track:hover {
+    background: none;
+}
+
+::-webkit-scrollbar-track:active {
+    background: none;
+}
+
+::-webkit-scrollbar-corner {
+    background: transparent;
 }

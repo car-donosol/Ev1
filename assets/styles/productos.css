@@ -20,6 +20,19 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+.titulo {
+    font-size: 1.2em;
+    margin-top: 5px;
+    font-weight: bold;
+}
+
+.precio {
+    font-size: 1em;
+    color: #0a6b20;
+    margin-top: 5px;
+    font-weight: bold;
+}
+
 .btn-ver-producto {
     background-color: #0a6b20;
     color: white;
