@@ -6,6 +6,10 @@ await supabase.auth.setSession(session);
 
 const cargando = document.getElementById('cargando');
 
+function formatearMoneda(numero) {
+    return new Intl.NumberFormat('es-CL').format(numero);
+}
+
 async function conseguirPedidos() {
     const { data: { user } } = await supabase.auth.getUser();
 
@@ -42,9 +46,9 @@ async function conseguirPedidos() {
         const statusTexto = statusMap[order.status] || order.status;
 
         orderDiv.innerHTML = `
-                    <h3>Pedido #${order.orderId}</h3>
+                    <h3>Pedido #${order.order_id}</h3>
                     <p>Fecha: ${formattedDate}</p>
-                    <p>Total: $${order.total_price}</p>
+                    <p>Total: $${formatearMoneda(order.total_price)}</p>
                     <p>Estado: ${statusTexto}</p>
                 `;
 
