@@ -5,10 +5,13 @@ function formatearMoneda(numero) {
     return new Intl.NumberFormat('es-CL').format(numero);
 }
 
+const cargandoDiv = document.getElementById("cargando")
+
 async function conseguirProductos() {
     const { data, error } = await supabase.from('productos').select('*')
     console.log(data)
     const productosDiv = document.getElementById('Productos')
+    cargandoDiv.style.display = "none"
     
     for (let producto of data) {
         const link = document.createElement('a')
