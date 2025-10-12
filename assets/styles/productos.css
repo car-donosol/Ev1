@@ -1,3 +1,10 @@
+.cargandoContenedor {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60dvh;
+}
+
 .imagenprod {
     width: 220px;
     height: 220px;
@@ -49,6 +56,26 @@
     background-color: #ffffff;
     color: #0a6b20;
     border: 2px solid #0a6b20;
+}
+
+.cargando {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #007400;
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    animation: spin 1s linear infinite;
+    margin: 50px auto;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 @media (max-width: 800px) {

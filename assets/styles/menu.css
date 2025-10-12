@@ -78,11 +78,7 @@
     .menu-mobile {
         display: block;
     }
-    .ul-left-menu {
-        display: none;
-    }
-
-    .ul-right-menu {
+    .right-menu {
         display: none;
     }
 }
