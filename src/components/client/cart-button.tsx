@@ -1,3 +1,5 @@
+"use client";
+
 export function CartButton() {
     return (
         <button className="bg-[#004E09] h-[40px] w-[40px] flex items-center justify-center rounded-full">
