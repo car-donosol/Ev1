@@ -3,7 +3,7 @@ import Productos from "@/components/server/productos";
 
 export default function Home() {
   return (
-    <div className="">
+    <div className="desktop-md:px-6">
       <Suspense fallback={<div>Cargando productos...</div>}>
         <Productos />
       </Suspense>

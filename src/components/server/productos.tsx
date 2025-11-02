@@ -1,4 +1,5 @@
 "use server"
+import Link from "next/link";
 import { products } from "@/db/products";
 
 export default async function Productos() {
@@ -6,14 +7,14 @@ export default async function Productos() {
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
             {products.map(product => (
-                <div 
-                    key={product.id} 
+                <div
+                    key={product.id}
                     className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col max-w-[300px] mx-auto w-full"
                 >
                     <div className="relative w-full pt-[80%]"> {/* Reduced from 100% to 80% for smaller height */}
-                        <img 
+                        <img
                             className="absolute top-0 left-0 w-full h-full object-contain p-4 hover:scale-105 transition-transform duration-300"
-                            src={product.image} 
+                            src={product.image}
                             alt={product.title}
                         />
                     </div>
@@ -31,11 +32,13 @@ export default async function Productos() {
                                 <span>({product.rating.count})</span>
                             </div>
                         </div>
-                        <button 
-                            className="w-full bg-[#004E09] text-white py-2 rounded-md hover:bg-[#003707] transition-colors duration-300 mt-auto"
-                        >
-                            Ver producto
-                        </button>
+                        <Link href={`/planta/${product.slug}`} className="mt-auto">
+                            <button
+                                className="w-full bg-[#004E09] text-white py-2 rounded-md hover:bg-[#003707] transition-colors duration-300 mt-auto"
+                            >
+                                Ver producto
+                            </button>
+                        </Link>
                     </div>
                 </div>
             ))}
