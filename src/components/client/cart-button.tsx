@@ -1,8 +1,17 @@
 "use client";
+import { CartContext } from "@/context/cart-context";
+import { useContext } from "react";
+import { VisibleTypes } from "@/types/visible.types";
 
 export function CartButton() {
+    const { visible, setVisible } = useContext(CartContext) as VisibleTypes;
+
+    const handleClick = () => {
+        setVisible(!visible);
+    };
+
     return (
-        <button className="bg-[#004E09] h-[40px] w-[40px] flex items-center justify-center rounded-full">
+        <button onClick={handleClick} className="bg-[#004E09] h-[40px] w-[40px] flex items-center justify-center rounded-full">
             <CartIcon />
         </button>
     )
@@ -10,7 +19,7 @@ export function CartButton() {
 
 function CartIcon() {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} fill="none">
+        <svg xmlns="http://www.w3.org/2000/svg" className="w-[24px] h-[24px]" fill="none">
             <g
                 stroke="#fff"
                 strokeLinecap="round"

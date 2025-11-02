@@ -1,5 +1,8 @@
 'use client';
 import { useEffect, useState, Activity } from "react"
+import { CartContext } from "@/context/cart-context";
+import { useContext } from "react";
+import type { VisibleTypes } from "@/types/visible.types";
 import { getCarrito } from "@/app/actions";
 
 interface CarritoItem {
@@ -12,6 +15,7 @@ interface CarritoItem {
 
 export function CartComponent() {
     const [carrito, setCarrito] = useState<CarritoItem[]>([]);
+    const { visible, setVisible } = useContext(CartContext) as VisibleTypes;
 
     useEffect(() => {
         const fetchData = async () => {
@@ -20,12 +24,16 @@ export function CartComponent() {
         fetchData();
     }, [])
 
+    const handleClose = () => {
+        setVisible(false);
+    };
+
     return (
-        <Activity mode="hidden">
+        <Activity mode={visible ? "visible" : "hidden"}>
             <nav className="w-[450px] h-full p-5 bg-white shadow-lg absolute right-0 z-20 overflow-hidden">
                 <div className="flex justify-between items-center mt-3 border-b border-gray-400 pb-4">
                     <h2 className="text-2xl">Carrito</h2>
-                    <button>Cerrar</button>
+                    <button onClick={handleClose}>Cerrar</button>
                 </div>
 
                 {carrito.length === 0 ? (

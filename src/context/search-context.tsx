@@ -1,8 +1,8 @@
 "use client";
 import { createContext, useState } from 'react';
-import type { SearchContextType } from "@/types/search-types";
+import type { VisibleTypes } from "@/types/visible.types";
 
-export const SearchContext = createContext<SearchContextType | undefined>(undefined);
+export const SearchContext = createContext<VisibleTypes | undefined>(undefined);
 
 export function SearchProvider({ children }: { children: React.ReactNode }) {
     const [visible, setVisible] = useState<boolean>(false);
