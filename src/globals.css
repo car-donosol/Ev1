@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@midudev/tailwind-animations";
 
 @theme {
     --breakpoint-mobile: 25.75rem;

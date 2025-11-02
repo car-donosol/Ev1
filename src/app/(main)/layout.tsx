@@ -4,6 +4,7 @@ import { Poppins } from "next/font/google";
 import { SearchProvider } from "@/context/search-context";
 
 import { MenuComponent } from "@/components/menu-omponent";
+import { CartComponent } from "@/components/client/cart-component";
 import { SearchComponent } from "@/components/search-component";
 import { FooterComponent } from "@/components/footer-component";
 
@@ -25,6 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${poppins.className} min-h-screen flex flex-col`}>
         <SearchProvider>
           <MenuComponent />
+          <CartComponent />
           <SearchComponent />
           
           <main className="max-w-[1400px] mx-auto flex-1 w-full">

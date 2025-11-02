@@ -13,7 +13,7 @@ export function SearchComponent() {
 
     return (
         <Activity mode={visible ? "visible" : "hidden"}>
-            <div className="absolute top-30 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-11">
+            <div className="absolute top-30 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-11 animate-fade-in" style={{ animationDuration: "350ms" }}>
                 <input
                     type="text"
                     placeholder="Buscar..."
@@ -24,7 +24,9 @@ export function SearchComponent() {
             <div
                 id="overlay" 
                 onClick={handleOverlayClick}
-                className="bg-[#0000005c] w-full h-full fixed top-0 left-0 z-10">
+                className="bg-[#00000042] animate-fade-in backdrop-blur-[2px] w-full h-full fixed top-0 left-0 z-10"
+                style={{ animationDuration: "100ms" }}
+            >
             </div>
         </Activity>
     )

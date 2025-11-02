@@ -1,5 +1,5 @@
 'use server';
-import { users } from "@/users";
+import { users } from "@/db/users";
 import { cookies } from "next/headers";
 
 export async function login(data: FormData) {
@@ -40,4 +40,16 @@ export async function login(data: FormData) {
         console.error("Login error:", error);
         return { success: false, message: "Unexpected error during login" };
     }
+}
+
+export async function getCarrito() {
+    return [
+        { 
+            id: 1,
+            title: "Planta 1",
+            image: "/planta1.jpg",
+            price: 100,
+            quantity: 2
+        }
+    ];
 }
