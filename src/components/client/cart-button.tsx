@@ -1,18 +1,47 @@
 "use client";
 import { CartContext } from "@/context/cart-context";
-import { useContext } from "react";
-import { VisibleTypes } from "@/types/visible.types";
+import { useContext, useEffect, useState } from "react";
+import type { VisibleTypes } from "@/types/visible.types";
+import { getCarrito } from "@/app/actions";
 
 export function CartButton() {
     const { visible, setVisible } = useContext(CartContext) as VisibleTypes;
+    const [count, setCount] = useState<number>(0);
 
-    const handleClick = () => {
+    useEffect(() => {
+        let mounted = true;
+        const fetchCount = async () => {
+            try {
+                const items = await getCarrito();
+                if (!mounted) return;
+                const total = (items || []).reduce((s: number, it: any) => s + (it.quantity ?? 0), 0);
+                setCount(total);
+            } catch (err) {
+                console.error('Failed to fetch cart count', err);
+            }
+        };
+        fetchCount();
+        return () => { mounted = false };
+    }, []);
+
+    const handleClick = async () => {
+        // toggle visibility and refresh count
         setVisible(!visible);
+        try {
+            const items = await getCarrito();
+            const total = (items || []).reduce((s: number, it: any) => s + (it.quantity ?? 0), 0);
+            setCount(total);
+        } catch (err) {
+            console.error('Failed to refresh cart after toggle', err);
+        }
     };
 
     return (
-        <button onClick={handleClick} className="bg-[#004E09] h-[40px] w-[40px] flex items-center justify-center rounded-full">
+        <button onClick={handleClick} className="relative bg-[#004E09] h-[40px] w-[40px] flex items-center justify-center rounded-full">
             <CartIcon />
+            {count > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">{count}</span>
+            )}
         </button>
     )
 }
