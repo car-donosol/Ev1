@@ -1,10 +1,10 @@
 "use client";
 import { Activity, useContext } from "react";
 import { SearchContext } from "@/context/search-context";
-import type { SearchContextType } from "@/types/visible.types";
+import type { VisibleTypes } from "@/types/visible.types";
 
 export function SearchComponent() {
-    const { visible, setVisible } = useContext(SearchContext) as SearchContextType;
+    const { visible, setVisible } = useContext(SearchContext) as VisibleTypes;
 
     const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
         const target = e.target as HTMLElement;

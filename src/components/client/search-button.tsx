@@ -1,10 +1,10 @@
 "use client";
 import { useContext } from "react";
 import { SearchContext } from "@/context/search-context";
-import type { SearchContextType } from "@/types/visible.types";
+import type { VisibleTypes } from "@/types/visible.types";
 
 export function SearchButton() {
-    const { visible, setVisible } = useContext(SearchContext) as SearchContextType;
+    const { visible, setVisible } = useContext(SearchContext) as VisibleTypes;
 
     return (
         <button

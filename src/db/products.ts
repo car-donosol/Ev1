@@ -140,3 +140,12 @@ export const products = [
     slug: "yuka"
   }
 ];
+
+
+export async function getProducts() {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(products);
+    }, 2000); // 2 segundos
+  });
+}

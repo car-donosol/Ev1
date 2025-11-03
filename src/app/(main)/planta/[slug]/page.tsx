@@ -1,23 +1,27 @@
-import { products } from "@/db/products";
+import { Suspense } from "react";
+import { getProducts } from "@/db/products";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ slug: string }>
-}) {
-  const { slug } = await params;
-  const product = products.find(p => p.slug === slug);
+interface PageProps {
+  params: Promise<{
+    id: string;
+  }>;
+}
+
+export default async function ProductPage({ params }: PageProps) {
+  const { id } = await params;
+  const products = await getProducts() as typeof import('@/db/products').products;
+  const product = products.find(p => p.slug === id);
 
   if (!product) {
     notFound();
   }
 
   return (
+    <Suspense fallback={<div>Loading...</div>}>
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row gap-8">
-        {/* Image Section */}
         <div className="md:w-1/2">
           <div className="relative w-full pt-[100%] bg-white rounded-lg overflow-hidden">
             <img
@@ -28,12 +32,11 @@ export default async function Page({
           </div>
         </div>
 
-        {/* Details Section */}
         <div className="md:w-1/2">
           <h1 className="text-3xl font-bold text-gray-800 mb-4">
             {product.title}
           </h1>
-          
+
           <div className="flex items-center gap-2 mb-4">
             <div className="flex items-center">
               <span className="text-yellow-400">★</span>
@@ -70,5 +73,6 @@ export default async function Page({
         </div>
       </div>
     </div>
+    </Suspense>
   );
 }
