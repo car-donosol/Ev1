@@ -1,5 +1,4 @@
-import { Suspense } from "react";
-import { getProducts } from "@/db/products";
+import { products } from "@/db/products";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -11,7 +10,6 @@ interface PageProps {
 
 export default async function ProductPage({ params }: PageProps) {
   const { id } = await params;
-  const products = await getProducts() as typeof import('@/db/products').products;
   const product = products.find(p => p.slug === id);
 
   if (!product) {
@@ -19,7 +17,6 @@ export default async function ProductPage({ params }: PageProps) {
   }
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row gap-8">
         <div className="md:w-1/2">
@@ -73,6 +70,5 @@ export default async function ProductPage({ params }: PageProps) {
         </div>
       </div>
     </div>
-    </Suspense>
   );
 }

@@ -16,6 +16,8 @@ const poppins = Poppins({
   weight: ["400", "500", "700"],
 });
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Huertabeja",
   description: "",
