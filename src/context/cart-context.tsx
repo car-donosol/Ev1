@@ -1,73 +1,49 @@
 "use client";
-import { createContext, useState, type ReactNode, useEffect } from 'react';
-import type { VisibleTypes } from "@/types/visible.types";
+import React, { createContext, useState, useEffect, ReactNode } from "react";
 
-export interface CartItem {
+export type CartItem = {
   id: number;
   title: string;
   image: string;
   price: number;
   quantity: number;
-}
+};
 
-export interface CartContextType extends VisibleTypes {
+export type CartContextType = {
   carrito: CartItem[];
-  setCarrito: React.Dispatch<React.SetStateAction<CartItem[]>>;
+  visible: boolean;
+  setVisible: (visible: boolean) => void;
   addItem: (item: CartItem) => void;
   removeItem: (id: number) => void;
   updateQuantity: (id: number, quantity: number) => void;
   clearCarrito: () => void;
-}
+};
 
-export const CartContext = createContext<CartContextType | undefined>(undefined);
-
-const CART_STORAGE_KEY = 'huertabeja_carrito';
+export const CartContext = createContext<CartContextType | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [visible, setVisible] = useState<boolean>(false);
   const [carrito, setCarrito] = useState<CartItem[]>([]);
-  const [isHydrated, setIsHydrated] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  // Cargar carrito desde localStorage al montar
   useEffect(() => {
-    try {
-      const savedCarrito = localStorage.getItem(CART_STORAGE_KEY);
-      if (savedCarrito) {
-        setCarrito(JSON.parse(savedCarrito));
-      }
-    } catch (err) {
-      console.error('Error loading cart from localStorage:', err);
-    }
-    setIsHydrated(true);
+    setMounted(true);
   }, []);
 
-  // Guardar carrito en localStorage cuando cambia
-  useEffect(() => {
-    if (isHydrated) {
-      try {
-        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(carrito));
-      } catch (err) {
-        console.error('Error saving cart to localStorage:', err);
-      }
-    }
-  }, [carrito, isHydrated]);
-
   const addItem = (item: CartItem) => {
-    setCarrito(prevCarrito => {
-      const existingItem = prevCarrito.find(i => i.id === item.id);
-      if (existingItem) {
-        return prevCarrito.map(i =>
-          i.id === item.id
-            ? { ...i, quantity: i.quantity + item.quantity }
-            : i
+    setCarrito((prev) => {
+      const existing = prev.find((i) => i.id === item.id);
+      if (existing) {
+        return prev.map((i) =>
+          i.id === item.id ? { ...i, quantity: i.quantity + item.quantity } : i
         );
       }
-      return [...prevCarrito, item];
+      return [...prev, item];
     });
   };
 
   const removeItem = (id: number) => {
-    setCarrito(prevCarrito => prevCarrito.filter(i => i.id !== id));
+    setCarrito((prev) => prev.filter((item) => item.id !== id));
   };
 
   const updateQuantity = (id: number, quantity: number) => {
@@ -75,10 +51,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
       removeItem(id);
       return;
     }
-    setCarrito(prevCarrito =>
-      prevCarrito.map(i =>
-        i.id === id ? { ...i, quantity } : i
-      )
+    setCarrito((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, quantity } : item))
     );
   };
 
@@ -86,12 +60,22 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setCarrito([]);
   };
 
-  if (!isHydrated) {
-    return <>{children}</>;
+  if (!mounted) {
+    return null;
   }
 
   return (
-    <CartContext.Provider value={{ visible, setVisible, carrito, setCarrito, addItem, removeItem, updateQuantity, clearCarrito }}>
+    <CartContext.Provider
+      value={{
+        carrito,
+        visible,
+        setVisible,
+        addItem,
+        removeItem,
+        updateQuantity,
+        clearCarrito,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );
