@@ -1,21 +1,17 @@
 import Link from "next/link";
 import { products } from "@/db/products";
 import { AddToCartButton } from "@/components/client/add-to-cart-button";
+import { Suspense } from "react";
 
 interface PageProps {
-  params: Promise<{ id: string }>; // 👈 es una Promise
+  params: Promise<{ id: string }>;
 }
 
 export default async function ProductPage({ params }: PageProps) {
-  // ✅ Desempaquetamos la promesa correctamente
   const { id } = await params;
 
-  console.log("🧩 Params recibido:", id);
-
-  // Buscar producto
   const product = products.find((p) => p.slug === id);
 
-  // Si no lo encuentra
   if (!product) {
     return (
       <div className="container mx-auto px-4 py-20 text-center">
@@ -42,7 +38,6 @@ export default async function ProductPage({ params }: PageProps) {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Producto principal */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
         <div className="flex items-center justify-center">
           <div className="relative w-full pt-[120%] bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
@@ -54,7 +49,6 @@ export default async function ProductPage({ params }: PageProps) {
           </div>
         </div>
 
-        {/* Detalles */}
         <div className="flex flex-col justify-start">
           <div className="mb-8 flex items-center gap-2 text-sm text-gray-600">
             <Link href="/" className="hover:text-[#004E09] transition-colors">
@@ -140,9 +134,14 @@ export default async function ProductPage({ params }: PageProps) {
             )}
           </div>
 
-          <div className="mb-6">
-            <AddToCartButton productId={product.id} stock={product.stock} />
-          </div>
+          <Suspense fallback={<div className="h-12 bg-gray-100 rounded-lg animate-pulse" />}>
+            <div className="mb-6">
+              <AddToCartButton
+                productId={product.id}
+                stock={product.stock}
+              />
+            </div>
+          </Suspense>
 
           <Link
             href="/"
@@ -153,7 +152,6 @@ export default async function ProductPage({ params }: PageProps) {
         </div>
       </div>
 
-      {/* Productos relacionados */}
       {relatedProducts.length > 0 && (
         <div className="border-t-2 border-gray-200 pt-12">
           <h2 className="text-3xl font-bold text-gray-800 mb-8">
