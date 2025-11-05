@@ -25,7 +25,7 @@ export function CartButton() {
     }, []);
 
     const handleClick = async () => {
-        // toggle visibility and refresh count
+
         setVisible(!visible);
         try {
             const items = await getCarrito();
