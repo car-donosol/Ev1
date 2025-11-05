@@ -7,7 +7,8 @@ export const products = [
     image: "/cala de color.jpeg",
     rating: { rate: 4.6, count: 83 },
     stock: 15,
-    slug: "cala-de-color"
+    slug: "cala-de-color",
+    category: "interior"
   },
   {
     id: 2,
@@ -17,7 +18,8 @@ export const products = [
     image: "/calatheaBurleMarx.jpeg",
     rating: { rate: 4.8, count: 122 },
     stock: 18,
-    slug: "calathea-burle-marx"
+    slug: "calathea-burle-marx",
+    category: "interior"
   },
   {
     id: 3,
@@ -27,7 +29,8 @@ export const products = [
     image: "/Cuna de moises.jpeg",
     rating: { rate: 4.5, count: 97 },
     stock: 20,
-    slug: "cuna-de-moises"
+    slug: "cuna-de-moises",
+    category: "interior"
   },
   {
     id: 4,
@@ -37,7 +40,8 @@ export const products = [
     image: "/Dipladenia.jpeg",
     rating: { rate: 4.7, count: 64 },
     stock: 12,
-    slug: "dipladenia"
+    slug: "dipladenia",
+    category: "exterior"
   },
   {
     id: 5,
@@ -47,7 +51,8 @@ export const products = [
     image: "/DolarVariegado.jpeg",
     rating: { rate: 4.4, count: 51 },
     stock: 25,
-    slug: "dolar-variegado"
+    slug: "dolar-variegado",
+    category: "interior"
   },
   {
     id: 6,
@@ -57,7 +62,8 @@ export const products = [
     image: "/Ficus Trenzado.jpeg",
     rating: { rate: 4.9, count: 147 },
     stock: 10,
-    slug: "ficus-trenzado"
+    slug: "ficus-trenzado",
+    category: "interior"
   },
   {
     id: 7,
@@ -67,7 +73,8 @@ export const products = [
     image: "/ficusEnanoVariegado.jpeg",
     rating: { rate: 4.3, count: 42 },
     stock: 22,
-    slug: "ficus-enano-variegado"
+    slug: "ficus-enano-variegado",
+    category: "interior"
   },
   {
     id: 8,
@@ -77,7 +84,8 @@ export const products = [
     image: "/Gomero.jpeg",
     rating: { rate: 4.6, count: 103 },
     stock: 16,
-    slug: "gomero"
+    slug: "gomero",
+    category: "interior"
   },
   {
     id: 9,
@@ -87,7 +95,8 @@ export const products = [
     image: "/monstera deliciosa.jpeg",
     rating: { rate: 4.9, count: 188 },
     stock: 14,
-    slug: "monstera-deliciosa"
+    slug: "monstera-deliciosa",
+    category: "interior"
   },
   {
     id: 10,
@@ -97,7 +106,8 @@ export const products = [
     image: "/MonsteraAdansonii.jpeg",
     rating: { rate: 4.8, count: 135 },
     stock: 19,
-    slug: "monstera-adansonii"
+    slug: "monstera-adansonii",
+    category: "interior"
   },
   {
     id: 11,
@@ -107,7 +117,8 @@ export const products = [
     image: "/peperomia cucharita.jpeg",
     rating: { rate: 4.5, count: 72 },
     stock: 26,
-    slug: "peperomia-cucharita"
+    slug: "peperomia-cucharita",
+    category: "interior"
   },
   {
     id: 12,
@@ -117,7 +128,8 @@ export const products = [
     image: "/peperomia hope.jpeg",
     rating: { rate: 4.4, count: 61 },
     stock: 23,
-    slug: "peperomia-hope"
+    slug: "peperomia-hope",
+    category: "interior"
   },
   {
     id: 13,
@@ -127,7 +139,8 @@ export const products = [
     image: "/sanseviera laurentii.jpeg",
     rating: { rate: 4.9, count: 203 },
     stock: 11,
-    slug: "sanseviera-laurentii"
+    slug: "sanseviera-laurentii",
+    category: "exterior"
   },
   {
     id: 14,
@@ -137,15 +150,15 @@ export const products = [
     image: "/yuka.jpeg",
     rating: { rate: 4.6, count: 89 },
     stock: 17,
-    slug: "yuka"
+    slug: "yuka",
+    category: "exterior"
   }
 ];
-
 
 export async function getProducts() {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(products);
-    }, 2000); // 2 segundos
+    }, 2000);
   });
 }

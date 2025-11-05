@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { addToCart } from "@/app/actions";
+import { CartContext, type CartContextType } from "@/context/cart-context";
+import { products } from "@/db/products";
 
 interface AddToCartButtonProps {
   productId: number;
@@ -12,18 +14,42 @@ export function AddToCartButton({ productId, stock }: AddToCartButtonProps) {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const { addItem, setVisible } = useContext(CartContext) as CartContextType;
 
   const handleAddToCart = async () => {
     if (quantity <= 0 || quantity > stock) return;
-    
+
     setLoading(true);
     setMessage(null);
-    
+
     try {
+      // Llamar a la acción del servidor
       const result = await addToCart(productId, quantity);
+
       if (result.success) {
+        // Encontrar el producto para obtener sus detalles
+        const product = products.find((p) => p.id === productId);
+
+        if (product) {
+          // Actualizar el contexto del carrito en tiempo real
+          addItem({
+            id: product.id,
+            title: product.title,
+            image: product.image,
+            price: product.price,
+            quantity: quantity,
+          });
+        }
+
         setMessage("¡Producto agregado al carrito!");
         setQuantity(1);
+
+        // Abrir el carrito automáticamente
+        setTimeout(() => {
+          setVisible(true);
+        }, 500);
+
+        // Limpiar mensaje después de 3 segundos
         setTimeout(() => setMessage(null), 3000);
       } else {
         setMessage(result.message || "Error al agregar al carrito");
@@ -64,15 +90,19 @@ export function AddToCartButton({ productId, stock }: AddToCartButtonProps) {
         disabled={loading || stock === 0}
         className={`w-full py-3 rounded-md font-semibold transition-colors duration-300 ${
           stock === 0
-            ? 'bg-gray-400 text-white cursor-not-allowed'
-            : 'bg-[#004E09] text-white hover:bg-[#003707] disabled:opacity-50'
+            ? "bg-gray-400 text-white cursor-not-allowed"
+            : "bg-[#004E09] text-white hover:bg-[#003707] disabled:opacity-50"
         }`}
       >
-        {loading ? 'Agregando...' : stock === 0 ? 'Agotado' : 'Agregar al carrito'}
+        {loading ? "Agregando..." : stock === 0 ? "Agotado" : "Agregar al carrito"}
       </button>
 
       {message && (
-        <p className={`text-center text-sm font-medium ${message.includes('Error') ? 'text-red-600' : 'text-green-600'}`}>
+        <p
+          className={`text-center text-sm font-medium ${
+            message.includes("Error") ? "text-red-600" : "text-green-600"
+          }`}
+        >
           {message}
         </p>
       )}

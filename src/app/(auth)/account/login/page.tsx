@@ -1,10 +1,12 @@
 "use client"
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { login } from "@/app/actions"
 
 export default function LoginPage() {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState<string | null>(null);
+    const router = useRouter();
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -14,8 +16,16 @@ export default function LoginPage() {
         try {
             const formData = new FormData(event.currentTarget);
             const result = await login(formData);
-            if (result?.success) {
+            
+            if (result?.success && result?.user) {
+                // Guardar usuario en localStorage
+                localStorage.setItem('usuario', JSON.stringify(result.user));
                 setMessage("Inicio de sesión exitoso.");
+                
+                // Redirigir al inicio después de 1 segundo
+                setTimeout(() => {
+                    router.push('/');
+                }, 1000);
             } else {
                 setMessage(result?.message || "Credenciales inválidas.");
             }
@@ -66,12 +76,15 @@ export default function LoginPage() {
                         type="submit"
                         className={`mt-6 w-full rounded-full ${loading ? "opacity-70" : "hover:opacity-90"} bg-[#004E09] text-white h-[3.6rem] mobile:h-[4rem] text-[1.05rem] font-semibold transition-all duration-200`}
                         aria-busy={loading ? "true" : "false"}
+                        disabled={loading}
                     >
                         {loading ? "Ingresando..." : "Iniciar sesión"}
                     </button>
 
                     {message && (
-                        <p className="mt-4 text-center text-sm text-[#333]">{message}</p>
+                        <p className={`mt-4 text-center text-sm font-medium ${message.includes("exitoso") ? "text-green-600" : "text-red-600"}`}>
+                            {message}
+                        </p>
                     )}
                 </form>
             </div>
