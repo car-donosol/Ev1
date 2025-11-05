@@ -13,6 +13,8 @@ export async function generateStaticParams() {
   }));
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function ProductPage({ params }: ProductPageProps) {
   const { id } = await params;
   const product = products.find((p) => p.id === parseInt(id));
