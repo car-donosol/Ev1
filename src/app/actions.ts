@@ -5,43 +5,114 @@ import { cookies } from "next/headers";
 
 type CartCookieItem = { id: number; quantity: number };
 
+// Función auxiliar para obtener usuarios de localStorage (simulado en cookie)
+async function getUsersFromStorage() {
+    const cookiesStore = await cookies();
+    const userCookie = cookiesStore.get("users")?.value;
+    if (userCookie) {
+        try {
+            const cookieUsers = JSON.parse(userCookie);
+            return Array.isArray(cookieUsers) ? cookieUsers : [];
+        } catch (err) {
+            console.error("Invalid cookie format:", err);
+            return [];
+        }
+    }
+    return [];
+}
+
+// Función auxiliar para guardar usuarios en localStorage (simulado en cookie)
+async function saveUsersToStorage(usersList: any[]) {
+    const cookiesStore = await cookies();
+    cookiesStore.set({
+        name: 'users',
+        value: JSON.stringify(usersList),
+        path: '/',
+        maxAge: 60 * 60 * 24 * 365 // 1 año
+    });
+}
+
+export async function register(data: FormData) {
+    try {
+        const name = data.get("name")?.toString();
+        const email = data.get("email")?.toString();
+        const password = data.get("password")?.toString();
+
+        if (!name || !email || !password) {
+            return { success: false, message: "Todos los campos son requeridos" };
+        }
+
+        // Validar longitud de contraseña
+        if (password.length < 6) {
+            return { success: false, message: "La contraseña debe tener al menos 6 caracteres" };
+        }
+
+        // Verificar si el email ya existe en users.ts
+        const existingUser = users.find(u => u.email === email);
+        if (existingUser) {
+            return { success: false, message: "Este correo ya está registrado" };
+        }
+
+        // Verificar en localStorage (cookie)
+        const storageUsers = await getUsersFromStorage();
+        const existingStorageUser = storageUsers.find((u: any) => u.email === email);
+        if (existingStorageUser) {
+            return { success: false, message: "Este correo ya está registrado" };
+        }
+
+        // Crear nuevo usuario
+        const newUser = {
+            id: Date.now(), // ID único basado en timestamp
+            name,
+            email,
+            password
+        };
+
+        // Agregar usuario a la lista de localStorage
+        storageUsers.push(newUser);
+        await saveUsersToStorage(storageUsers);
+
+        return { 
+            success: true, 
+            user: { id: newUser.id, name: newUser.name, email: newUser.email },
+            message: "Usuario registrado exitosamente"
+        };
+    } catch (error) {
+        console.error("Register error:", error);
+        return { success: false, message: "Error inesperado al registrar" };
+    }
+}
+
 export async function login(data: FormData) {
     try {
-        const cookiesStore = await cookies();
-
         const email = data.get("email")?.toString();
         const password = data.get("password")?.toString();
 
         if (!email || !password) {
-            return { success: false, message: "Email and password are required" };
+            return { success: false, message: "Email y contraseña son requeridos" };
         }
 
+        // Buscar primero en users.ts (usuarios predefinidos)
         let user = users.find(u => u.email === email && u.password === password);
 
+        // Si no se encuentra, buscar en localStorage (usuarios registrados)
         if (!user) {
-            const userCookie = cookiesStore.get("users")?.value;
-            if (userCookie) {
-                try {
-                    const cookieUsers = JSON.parse(userCookie);
-                    if (Array.isArray(cookieUsers)) {
-                        user = cookieUsers.find(
-                            (u: any) => u.email === email && u.password === password
-                        );
-                    }
-                } catch (err) {
-                    console.error("Invalid cookie format:", err);
-                }
-            }
+            const storageUsers = await getUsersFromStorage();
+            user = storageUsers.find(
+                (u: any) => u.email === email && u.password === password
+            );
         }
 
         if (!user) {
-            return { success: false, message: "Invalid email or password" };
+            return { success: false, message: "Email o contraseña incorrectos" };
         }
 
-        return { success: true, user };
+        // Retornar usuario sin la contraseña
+        const { password: _, ...userWithoutPassword } = user;
+        return { success: true, user: userWithoutPassword };
     } catch (error) {
         console.error("Login error:", error);
-        return { success: false, message: "Unexpected error during login" };
+        return { success: false, message: "Error inesperado al iniciar sesión" };
     }
 }
 
@@ -60,7 +131,6 @@ function parseCartCookie(value?: string | null): CartCookieItem[] {
 }
 
 function buildCartResponse(items: CartCookieItem[]) {
-    // Map cookie items to product info
     return items
         .map(ci => {
             const p = products.find(pp => pp.id === ci.id);
@@ -78,7 +148,7 @@ function buildCartResponse(items: CartCookieItem[]) {
 
 export async function getCarrito() {
     try {
-    const cookiesStore = await cookies();
+        const cookiesStore = await cookies();
         const cookieValue = cookiesStore.get('carrito')?.value ?? null;
         const parsed = parseCartCookie(cookieValue);
         return buildCartResponse(parsed);
@@ -90,7 +160,7 @@ export async function getCarrito() {
 
 export async function addToCart(productId: number, quantity = 1) {
     try {
-    const cookiesStore = await cookies();
+        const cookiesStore = await cookies();
         const cookieValue = cookiesStore.get('carrito')?.value ?? null;
         const parsed = parseCartCookie(cookieValue);
 
@@ -117,7 +187,7 @@ export async function addToCart(productId: number, quantity = 1) {
 
 export async function updateCartItem(productId: number, quantity: number) {
     try {
-    const cookiesStore = await cookies();
+        const cookiesStore = await cookies();
         const cookieValue = cookiesStore.get('carrito')?.value ?? null;
         const parsed = parseCartCookie(cookieValue);
 
@@ -127,7 +197,6 @@ export async function updateCartItem(productId: number, quantity: number) {
         }
 
         if (quantity <= 0) {
-            // remove
             parsed.splice(idx, 1);
         } else {
             parsed[idx].quantity = quantity;
@@ -143,7 +212,7 @@ export async function updateCartItem(productId: number, quantity: number) {
 
 export async function removeFromCart(productId: number) {
     try {
-    const cookiesStore = await cookies();
+        const cookiesStore = await cookies();
         const cookieValue = cookiesStore.get('carrito')?.value ?? null;
         const parsed = parseCartCookie(cookieValue);
 
@@ -158,8 +227,7 @@ export async function removeFromCart(productId: number) {
 
 export async function clearCart() {
     try {
-    const cookiesStore = await cookies();
-        // delete by setting empty value
+        const cookiesStore = await cookies();
         cookiesStore.set({ name: 'carrito', value: JSON.stringify([]), path: '/' });
         return { success: true };
     } catch (err) {

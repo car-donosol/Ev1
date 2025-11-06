@@ -3,6 +3,7 @@ import { useState, useContext, useEffect } from "react"
 import { CartContext, type CartContextType } from "@/context/cart-context";
 import { removeFromCart, updateCartItem, clearCart } from "@/app/actions";
 import { Activity } from "react";
+import Link from "next/link";
 
 export function CartComponent() {
   const context = useContext(CartContext);
@@ -64,7 +65,7 @@ export function CartComponent() {
 
   return (
     <Activity mode={visible ? "visible" : "hidden"}>
-      <nav className="w-[450px] h-full p-5 bg-white shadow-lg absolute right-0 z-20 overflow-hidden">
+      <nav className="w-[450px] h-full p-5 bg-white shadow-lg absolute right-0 z-70 overflow-hidden">
         <div className="flex justify-between items-center mt-3 border-b border-gray-400 pb-4">
           <h2 className="text-2xl font-bold">Carrito</h2>
           <button 
@@ -143,11 +144,13 @@ export function CartComponent() {
                 >
                   Vaciar
                 </button>
-                <button 
-                  className="flex-1 px-3 py-2 bg-[#004E09] text-white rounded hover:bg-[#003707] transition-colors"
+                <Link 
+                  href="/checkout"
+                  onClick={handleClose}
+                  className="flex-1 px-3 py-2 bg-[#004E09] text-white rounded hover:bg-[#003707] transition-colors text-center"
                 >
                   Proceder al pago
-                </button>
+                </Link>
               </div>
             </div>
           </div>
