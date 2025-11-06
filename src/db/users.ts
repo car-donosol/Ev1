@@ -4,11 +4,5 @@ export const users = [
         name: "Juan Perez",
         email: "juansito@gmail.com",
         password: "password123"
-    },
-    {
-        id: 2,
-        name: "Maria Gomez",
-        email: "",
-        password: ""
     }
 ]

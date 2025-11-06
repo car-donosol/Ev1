@@ -8,7 +8,31 @@ export function FilterMenu() {
 
   if (!context) return null;
 
-  const { sortBy, setSortBy, category, setCategory, isFilterOpen, setIsFilterOpen, resetFilters } = context;
+  const { 
+    sortBy, 
+    setSortBy, 
+    category, 
+    setCategory, 
+    isFilterOpen, 
+    setIsFilterOpen, 
+    resetFilters,
+    onlyOffers,
+    setOnlyOffers,
+    minRating,
+    setMinRating,
+    priceRange,
+    setPriceRange
+  } = context;
+
+  // Bloquear scroll del body cuando el menú está abierto
+  useEffect(() => {
+    if (isFilterOpen) {
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = "auto";
+      };
+    }
+  }, [isFilterOpen]);
 
   // Cerrar menú al hacer clic fuera
   useEffect(() => {
@@ -34,15 +58,21 @@ export function FilterMenu() {
     { value: 'relevance', label: 'Relevancia' },
     { value: 'price-asc', label: 'Menor precio' },
     { value: 'price-desc', label: 'Mayor precio' },
-    { value: 'rating', label: 'Más populares (Rating)' }
+    { value: 'rating', label: 'Más populares (Rating)' },
+    { value: 'name-asc', label: 'Nombre A-Z' },
+    { value: 'name-desc', label: 'Nombre Z-A' }
   ];
+
+  // Calcular rango de precios de productos
+  const maxPrice = 15000;
+  const minPrice = 0;
 
   return (
     <>
       {isFilterOpen && (
         <div
           onClick={() => setIsFilterOpen(false)}
-          className="fixed inset-0 bg-black bg-opacity-20 z-20 backdrop-blur-sm transition-opacity duration-200"
+          className="fixed inset-0 bg-black opacity-20 z-20 backdrop-blur-sm transition-opacity duration-200"
         />
       )}
 
@@ -66,6 +96,21 @@ export function FilterMenu() {
         </div>
 
         <div className="p-4 space-y-6 max-h-[500px] overflow-y-auto">
+          {/* Solo ofertas */}
+          <div>
+            <label className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors">
+              <input
+                type="checkbox"
+                checked={onlyOffers}
+                onChange={(e) => setOnlyOffers(e.target.checked)}
+                className="w-4 h-4 text-[#004E09] cursor-pointer accent-[#004E09]"
+              />
+              <span className="text-sm font-semibold text-gray-700">🏷️ Solo productos en oferta</span>
+            </label>
+          </div>
+
+          <hr className="border-gray-200" />
+
           {/* Filtro por Categoría */}
           <div>
             <h4 className="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wider">
@@ -114,6 +159,71 @@ export function FilterMenu() {
 
           <hr className="border-gray-200" />
 
+          {/* Filtro por Rating */}
+          <div>
+            <h4 className="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wider">
+              Rating mínimo: {minRating === 0 ? 'Todos' : minRating}
+            </h4>
+            <input
+              type="range"
+              min="0"
+              max="5"
+              step="1"
+              value={minRating}
+              onChange={(e) => setMinRating(parseInt(e.target.value))}
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#004E09]"
+            />
+            <div className="flex justify-between text-xs text-gray-500 mt-1">
+              <span>0</span>
+              <span>1</span>
+              <span>2</span>
+              <span>3</span>
+              <span>4</span>
+              <span>5</span>
+            </div>
+          </div>
+
+          <hr className="border-gray-200" />
+
+          {/* Filtro por Precio */}
+          <div>
+            <h4 className="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wider">
+              Rango de precio
+            </h4>
+            <div className="space-y-3">
+              <div>
+                <label className="text-xs text-gray-600 mb-1 block">Precio mínimo: ${priceRange[0].toLocaleString()}</label>
+                <input
+                  type="range"
+                  min={minPrice}
+                  max={maxPrice}
+                  step="1000"
+                  value={priceRange[0]}
+                  onChange={(e) => setPriceRange([parseInt(e.target.value), priceRange[1]])}
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#004E09]"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-gray-600 mb-1 block">Precio máximo: ${priceRange[1].toLocaleString()}</label>
+                <input
+                  type="range"
+                  min={minPrice}
+                  max={maxPrice}
+                  step="1000"
+                  value={priceRange[1]}
+                  onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#004E09]"
+                />
+              </div>
+              <div className="flex justify-between text-xs text-gray-500">
+                <span>${minPrice.toLocaleString()}</span>
+                <span>${maxPrice.toLocaleString()}</span>
+              </div>
+            </div>
+          </div>
+
+          <hr className="border-gray-200" />
+
           {/* Botón Reset */}
           <button
             onClick={resetFilters}
@@ -132,14 +242,18 @@ export function FilterMenu() {
         </div>
 
         {/* Resumen de filtros activos */}
-        {(category !== 'all' || sortBy !== 'relevance') && (
+        {(category !== 'all' || sortBy !== 'relevance' || onlyOffers || minRating > 0 || priceRange[0] > minPrice || priceRange[1] < maxPrice) && (
           <div className="px-4 py-3 bg-green-50 border-t border-green-200 text-xs text-green-700">
-            <p className="font-medium">Filtros activos:</p>
-            <p className="text-xs">
-              {category !== 'all' && `Categoría: ${category}`}
-              {category !== 'all' && sortBy !== 'relevance' && ' • '}
-              {sortBy !== 'relevance' && `Orden: ${sortBy === 'price-asc' ? 'Menor precio' : sortBy === 'price-desc' ? 'Mayor precio' : 'Rating'}`}
-            </p>
+            <p className="font-medium mb-1">Filtros activos:</p>
+            <ul className="text-xs space-y-0.5">
+              {onlyOffers && <li>• Solo ofertas</li>}
+              {category !== 'all' && <li>• Categoría: {category}</li>}
+              {sortBy !== 'relevance' && <li>• Orden: {sortOptions.find(s => s.value === sortBy)?.label}</li>}
+              {minRating > 0 && <li>• Rating: {minRating} estrellas o más</li>}
+              {(priceRange[0] > minPrice || priceRange[1] < maxPrice) && (
+                <li>• Precio: ${priceRange[0].toLocaleString()} - ${priceRange[1].toLocaleString()}</li>
+              )}
+            </ul>
           </div>
         )}
       </div>

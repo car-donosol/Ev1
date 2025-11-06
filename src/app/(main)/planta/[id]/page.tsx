@@ -42,20 +42,12 @@ export default async function ProductPage({ params }: PageProps) {
   return (
     <Suspense fallback={<LoadingSkeleton />}>
       <div className="container mx-auto px-4 py-8">
-        {/* Breadcrumb */}
-        <div className="mb-8 flex items-center gap-2 text-sm text-gray-600">
-          <Link href="/" className="hover:text-[#004E09] transition-colors">Inicio</Link>
-          <span className="text-gray-400">/</span>
-          <Link href="/" className="hover:text-[#004E09] transition-colors">Catálogo</Link>
-          <span className="text-gray-400">/</span>
-          <span className="text-gray-800 font-medium">{product.title}</span>
-        </div>
 
         {/* Producto Principal */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12  mb-16">
           {/* Imagen del producto */}
           <div className="flex items-center justify-center">
-            <div className="relative w-full pt-[100%] bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+            <div className="relative w-full pt-[120%] bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
               <img
                 src={product.image}
                 alt={product.title}
@@ -66,6 +58,12 @@ export default async function ProductPage({ params }: PageProps) {
 
           {/* Información del producto */}
           <div className="flex flex-col justify-start">
+              {/* Breadcrumb */}
+            <div className="mb-8 flex items-center gap-2 text-sm text-gray-600">
+              <Link href="/" className="hover:text-[#004E09] transition-colors">Inicio</Link>
+              <span className="text-gray-400">/</span>
+              <span className="text-gray-800 font-medium">{product.title}</span>
+            </div>
             {/* Título */}
             <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4 leading-tight">
               {product.title}
