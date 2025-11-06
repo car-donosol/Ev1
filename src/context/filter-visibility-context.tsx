@@ -1,6 +1,7 @@
 "use client";
 import { createContext, useContext, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { CartContext } from "@/context/cart-context";
 
 interface FilterVisibilityContextType {
   showFilterButton: boolean;
@@ -8,22 +9,37 @@ interface FilterVisibilityContextType {
 
 const FilterVisibilityContext = createContext<FilterVisibilityContextType | undefined>(undefined);
 
-export function FilterVisibilityProvider({ children }: { children: React.ReactNode }) {
+function FilterVisibilityProviderInner({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const cartContext = useContext(CartContext);
   const [showFilterButton, setShowFilterButton] = useState(true);
 
   useEffect(() => {
     // Rutas donde NO mostrar el botón de filtro
-    const hiddenRoutes = ['/contact', '/orders', '/profile', '/account/login'];
+    const hiddenRoutes = ['/contact', '/orders', '/profile', '/account/login', '/planta'];
     
-    const shouldHide = hiddenRoutes.some(route => pathname.startsWith(route));
-    setShowFilterButton(!shouldHide);
-  }, [pathname]);
+    // Verificar si está en una ruta oculta
+    const isHiddenRoute = hiddenRoutes.some(route => pathname.startsWith(route));
+    
+    // Verificar si el carrito está visible
+    const isCartVisible = cartContext?.visible;
+    
+    // Ocultar el botón si está en ruta oculta O si el carrito está visible
+    setShowFilterButton(!isHiddenRoute && !isCartVisible);
+  }, [pathname, cartContext?.visible]);
 
   return (
     <FilterVisibilityContext.Provider value={{ showFilterButton }}>
       {children}
     </FilterVisibilityContext.Provider>
+  );
+}
+
+export function FilterVisibilityProvider({ children }: { children: React.ReactNode }) {
+  return (
+    <FilterVisibilityProviderInner>
+      {children}
+    </FilterVisibilityProviderInner>
   );
 }
 
