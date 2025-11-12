@@ -1,11 +1,13 @@
 "use client";
 import { useContext } from "react";
 import { FilterContext } from "@/context/filter-context";
+import { useFilterVisibility } from "@/context/filter-visibility-context";
 
 export function FilterButton() {
   const context = useContext(FilterContext);
+  const { showFilterButton } = useFilterVisibility();
 
-  if (!context) return null;
+  if (!context || !showFilterButton) return null;
 
   const { isFilterOpen, setIsFilterOpen } = context;
 

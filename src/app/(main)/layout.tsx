@@ -4,6 +4,7 @@ import { Poppins } from "next/font/google";
 import { SearchProvider } from "@/context/search-context";
 import { CartProvider } from "@/context/cart-context";
 import { FilterProvider } from "@/context/filter-context";
+import { FilterVisibilityProvider } from "@/context/filter-visibility-context";
 
 import { MenuComponent } from "@/components/menu-omponent";
 import { CartComponent } from "@/components/client/cart-component";
@@ -33,17 +34,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SearchProvider>
           <CartProvider>
             <FilterProvider>
-              <MenuComponent />
-              <CartComponent />
-              <SearchComponent />
-              <FilterButton />
-              <FilterMenu />
-              
-              <main className="max-w-[1400px] mx-auto flex-1 w-full">
-                {children}
-              </main>
-              
-              <FooterComponent />
+              <FilterVisibilityProvider>
+                <MenuComponent />
+                <CartComponent />
+                <SearchComponent />
+                <FilterButton />
+                <FilterMenu />
+                
+                <main className="max-w-[1400px] mx-auto flex-1 w-full">
+                  {children}
+                </main>
+                
+                <FooterComponent />
+              </FilterVisibilityProvider>
             </FilterProvider>
           </CartProvider>
         </SearchProvider>

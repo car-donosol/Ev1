@@ -42,10 +42,10 @@ export function MenuComponent() {
                         <Link href="/">Inicio</Link>
                     </li>
                     <li className="text-xl hover:opacity-70 desktop-md:text-[1.1rem]">
-                        <Link href="/">Catalogo</Link>
+                        <Link href="/">Catálogo</Link>
                     </li>
                     <li className="text-xl hover:opacity-70 desktop-md:text-[1.1rem]">
-                        <Link href="/">Contacto</Link>
+                        <Link href="/contact">Contacto</Link>
                     </li>
                 </ul>
 

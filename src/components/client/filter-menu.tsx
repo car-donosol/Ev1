@@ -1,9 +1,11 @@
 "use client";
 import { useContext, useRef, useEffect } from "react";
 import { FilterContext, type SortBy, type Category } from "@/context/filter-context";
+import { CartContext } from "@/context/cart-context";
 
 export function FilterMenu() {
   const context = useContext(FilterContext);
+  const cartContext = useContext(CartContext);
   const menuRef = useRef<HTMLDivElement>(null);
 
   if (!context) return null;
@@ -23,6 +25,13 @@ export function FilterMenu() {
     priceRange,
     setPriceRange
   } = context;
+
+  // Cerrar menú de filtro cuando se abre el carrito
+  useEffect(() => {
+    if (cartContext?.visible) {
+      setIsFilterOpen(false);
+    }
+  }, [cartContext?.visible, setIsFilterOpen]);
 
   // Bloquear scroll del body cuando el menú está abierto
   useEffect(() => {
@@ -78,24 +87,24 @@ export function FilterMenu() {
 
       <div
         ref={menuRef}
-        className={`fixed bottom-24 right-8 z-30 bg-white rounded-xl shadow-2xl border border-gray-200 transition-all duration-300 transform ${
+        className={`fixed bottom-24 right-8 z-30 bg-white rounded-xl shadow-2xl border border-gray-200 transition-all duration-300 transform max-h-[80vh] ${
           isFilterOpen
             ? "opacity-100 scale-100 translate-y-0"
             : "opacity-0 scale-95 translate-y-4 pointer-events-none"
-        } w-80`}
+        } w-80 sm:w-96 md:w-80`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200">
+        <div className="flex items-center justify-between p-4 border-b border-gray-200 sticky top-0 bg-white rounded-t-xl">
           <h3 className="text-lg font-bold text-gray-800">Filtrar productos</h3>
           <button
             onClick={() => setIsFilterOpen(false)}
-            className="text-gray-500 hover:text-gray-700 transition-colors"
+            className="text-gray-500 hover:text-gray-700 transition-colors text-2xl leading-none"
           >
             ✕
           </button>
         </div>
 
-        <div className="p-4 space-y-6 max-h-[500px] overflow-y-auto">
+        <div className="p-4 space-y-6 overflow-y-auto max-h-[calc(80vh-80px)]">
           {/* Solo ofertas */}
           <div>
             <label className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors">
