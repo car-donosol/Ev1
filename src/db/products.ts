@@ -9,7 +9,8 @@ export const products = [
     rating: { rate: 4.6, count: 83 },
     stock: 15,
     slug: "cala-de-color",
-    category: "interior"
+    category: "interior",
+    home: true
   },
   {
     id: 2,

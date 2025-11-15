@@ -1,5 +1,7 @@
 import { Suspense } from "react";
 import Productos from "@/components/server/productos";
+import HomePage from "@/components/server/productos";
+
 
 export default function Home() {
   return (
