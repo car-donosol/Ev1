@@ -2,13 +2,41 @@
 import { useContext, useState, useEffect } from "react";
 import { SearchContext } from "@/context/search-context";
 import type { VisibleTypes } from "@/types/visible.types";
-import { products } from "@/db/products";
+import { supabase } from "@/db/supabase";
+import type { Product } from "@/db/products";
 import Link from "next/link";
 
 export function SearchComponent() {
     const { visible, setVisible } = useContext(SearchContext) as VisibleTypes;
     const [searchTerm, setSearchTerm] = useState("");
-    const [searchResults, setSearchResults] = useState<typeof products>([]);
+    const [searchResults, setSearchResults] = useState<Product[]>([]);
+    const [allProducts, setAllProducts] = useState<Product[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    // Cargar todos los productos una vez cuando el componente se monta
+    useEffect(() => {
+        async function loadProducts() {
+            try {
+                const { data, error } = await supabase
+                    .from('products')
+                    .select('*')
+                    .order('id', { ascending: true });
+
+                if (error) {
+                    console.error('Error loading products:', error);
+                    return;
+                }
+
+                setAllProducts(data || []);
+            } catch (err) {
+                console.error('Error in loadProducts:', err);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+
+        loadProducts();
+    }, []);
 
     useEffect(() => {
         if (searchTerm.trim() === "") {
@@ -16,13 +44,13 @@ export function SearchComponent() {
             return;
         }
 
-        const filtered = products.filter(product =>
+        const filtered = allProducts.filter(product =>
             product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
             product.description.toLowerCase().includes(searchTerm.toLowerCase())
         );
 
         setSearchResults(filtered);
-    }, [searchTerm]);
+    }, [searchTerm, allProducts]);
 
     const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
         const target = e.target as HTMLElement;
@@ -42,7 +70,7 @@ export function SearchComponent() {
     return (
         <>
             <div
-                id="overlay" 
+                id="overlay"
                 onClick={handleOverlayClick}
                 className="bg-[#00000042] animate-fade-in backdrop-blur-[2px] w-full h-full fixed top-0 left-0 z-60"
                 style={{ animationDuration: "100ms" }}
@@ -62,7 +90,12 @@ export function SearchComponent() {
                 {/* Resultados de búsqueda */}
                 {searchTerm.trim() !== "" && (
                     <div className="bg-white mt-2 max-h-[400px] overflow-y-auto rounded-lg shadow-lg border border-gray-200 animate-fade-in" style={{ animationDuration: "350ms" }}>
-                        {searchResults.length > 0 ? (
+                        {isLoading ? (
+                            <div className="p-8 text-center">
+                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#004E09] mx-auto"></div>
+                                <p className="text-gray-600 font-medium mt-3">Cargando...</p>
+                            </div>
+                        ) : searchResults.length > 0 ? (
                             <div className="p-2">
                                 <p className="text-xs text-gray-500 px-3 py-2 font-medium">
                                     {searchResults.length} {searchResults.length === 1 ? 'resultado encontrado' : 'resultados encontrados'}
@@ -93,9 +126,9 @@ export function SearchComponent() {
                                                     <span className="font-bold text-sm text-[#004E09]">
                                                         ${product.price.toLocaleString()}
                                                     </span>
-                                                    {product.priceOffer > 0 && (
+                                                    {product.price_offer > 0 && (
                                                         <span className="text-xs text-gray-400 line-through">
-                                                            ${product.priceOffer.toLocaleString()}
+                                                            ${product.price_offer.toLocaleString()}
                                                         </span>
                                                     )}
                                                     <div className="flex items-center gap-1 ml-auto">

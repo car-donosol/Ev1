@@ -3,7 +3,7 @@
 import { useState, useContext } from "react";
 import { addToCart } from "@/app/actions";
 import { CartContext, type CartContextType } from "@/context/cart-context";
-import { products } from "@/db/products";
+import { supabase } from "@/db/supabase";
 
 interface AddToCartButtonProps {
   productId: number;
@@ -27,10 +27,14 @@ export function AddToCartButton({ productId, stock }: AddToCartButtonProps) {
       const result = await addToCart(productId, quantity);
 
       if (result.success) {
-        // Encontrar el producto para obtener sus detalles
-        const product = products.find((p) => p.id === productId);
+        // Obtener el producto desde Supabase
+        const { data: product, error } = await supabase
+          .from('products')
+          .select('id, title, image, price')
+          .eq('id', productId)
+          .single();
 
-        if (product) {
+        if (product && !error) {
           // Actualizar el contexto del carrito en tiempo real
           addItem({
             id: product.id,
@@ -88,20 +92,18 @@ export function AddToCartButton({ productId, stock }: AddToCartButtonProps) {
       <button
         onClick={handleAddToCart}
         disabled={loading || stock === 0}
-        className={`w-full py-3 rounded-md font-semibold transition-colors duration-300 ${
-          stock === 0
+        className={`w-full py-3 rounded-md font-semibold transition-colors duration-300 ${stock === 0
             ? "bg-gray-400 text-white cursor-not-allowed"
             : "bg-[#004E09] text-white hover:bg-[#003707] disabled:opacity-50"
-        }`}
+          }`}
       >
         {loading ? "Agregando..." : stock === 0 ? "Agotado" : "Agregar al carrito"}
       </button>
 
       {message && (
         <p
-          className={`text-center text-sm font-medium ${
-            message.includes("Error") ? "text-red-600" : "text-green-600"
-          }`}
+          className={`text-center text-sm font-medium ${message.includes("Error") ? "text-red-600" : "text-green-600"
+            }`}
         >
           {message}
         </p>

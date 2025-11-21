@@ -1,5 +1,6 @@
+"use server"
 import Link from "next/link";
-import { products } from "@/db/products";
+import { getProductBySlug, getRelatedProducts } from "@/db/products";
 import { AddToCartButton } from "@/components/client/add-to-cart-button";
 import { Suspense } from "react";
 
@@ -10,7 +11,7 @@ interface PageProps {
 export default async function ProductPage({ params }: PageProps) {
   const { id } = await params;
 
-  const product = products.find((p) => p.slug === id);
+  const product = await getProductBySlug(id);
 
   if (!product) {
     return (
@@ -31,10 +32,7 @@ export default async function ProductPage({ params }: PageProps) {
     );
   }
 
-  const relatedProducts = products
-    .filter((p) => p.id !== product.id)
-    .sort(() => Math.random() - 0.5)
-    .slice(0, 4);
+  const relatedProducts = (await getRelatedProducts(product.id, product.category, 4)) || [];
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -68,11 +66,10 @@ export default async function ProductPage({ params }: PageProps) {
                 {[...Array(5)].map((_, i) => (
                   <span
                     key={i}
-                    className={`text-lg ${
-                      i < Math.round(product.rating.rate)
-                        ? "text-yellow-400"
-                        : "text-gray-300"
-                    }`}
+                    className={`text-lg ${i < Math.round(product.rating.rate)
+                      ? "text-yellow-400"
+                      : "text-gray-300"
+                      }`}
                   >
                     ★
                   </span>
@@ -89,9 +86,16 @@ export default async function ProductPage({ params }: PageProps) {
           </div>
 
           <div className="mb-6 pb-6 border-b border-gray-200">
-            <p className="text-5xl font-bold text-[#004E09]">
-              ${product.price.toLocaleString("es-CL")}
-            </p>
+            <div className="flex items-baseline gap-3">
+              <p className="text-5xl font-bold text-[#004E09]">
+                ${(product.price_offer > 0 ? product.price_offer : product.price).toLocaleString("es-CL")}
+              </p>
+              {product.price_offer > 0 && (
+                <p className="text-lg text-gray-400 line-through">
+                  ${product.price.toLocaleString("es-CL")}
+                </p>
+              )}
+            </div>
             <p className="text-sm text-gray-500 mt-2">Precio por unidad</p>
           </div>
 
@@ -105,24 +109,22 @@ export default async function ProductPage({ params }: PageProps) {
           </div>
 
           <div
-            className={`mb-6 p-4 rounded-lg ${
-              product.stock > 10
-                ? "bg-green-50 border border-green-200"
-                : product.stock > 0
+            className={`mb-6 p-4 rounded-lg ${product.stock > 10
+              ? "bg-green-50 border border-green-200"
+              : product.stock > 0
                 ? "bg-orange-50 border border-orange-200"
                 : "bg-red-50 border border-red-200"
-            }`}
+              }`}
           >
             <p className="text-gray-700">
               <span className="font-semibold">Stock disponible:</span>
               <span
-                className={`ml-2 font-bold ${
-                  product.stock > 10
-                    ? "text-green-600"
-                    : product.stock > 0
+                className={`ml-2 font-bold ${product.stock > 10
+                  ? "text-green-600"
+                  : product.stock > 0
                     ? "text-orange-600"
                     : "text-red-600"
-                }`}
+                  }`}
               >
                 {product.stock} unidades
               </span>
@@ -183,12 +185,11 @@ export default async function ProductPage({ params }: PageProps) {
                     </div>
                     <div className="mt-auto">
                       <p className="font-bold text-lg text-[#004E09] mb-2">
-                        ${p.price.toLocaleString("es-CL")}
+                        ${(p.price_offer > 0 ? p.price_offer : p.price).toLocaleString("es-CL")}
                       </p>
                       <p
-                        className={`text-xs font-medium ${
-                          p.stock > 0 ? "text-green-600" : "text-red-600"
-                        }`}
+                        className={`text-xs font-medium ${p.stock > 0 ? "text-green-600" : "text-red-600"
+                          }`}
                       >
                         {p.stock > 0
                           ? `${p.stock} disponibles`
@@ -205,3 +206,4 @@ export default async function ProductPage({ params }: PageProps) {
     </div>
   );
 }
+

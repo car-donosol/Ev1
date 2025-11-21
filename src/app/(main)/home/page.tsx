@@ -1,10 +1,12 @@
 "use client";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { products } from "@/db/products";
+import { supabase } from "@/db/supabase";
+import type { Product } from "@/db/products";
 
 export default function HomePage() {
   const [scrollPosition, setScrollPosition] = useState(0);
+  const [homeProducts, setHomeProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -14,14 +16,26 @@ export default function HomePage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const categories = [
-    { name: "Outdoor Plant", slug: "exterior" },
-    { name: "Indoor Plant", slug: "interior" },
-    { name: "Flower Pot", slug: "flores" },
-    { name: "Potted Plant", slug: "macetas" },
-  ];
+  // Cargar productos destacados desde Supabase
+  useEffect(() => {
+    async function loadFeaturedProducts() {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('home', true)
+        .limit(6);
 
-  const homeProducts = products.filter((p) => p.home === true).slice(0, 6);
+      if (!error && data) {
+        setHomeProducts(data);
+      }
+    }
+    loadFeaturedProducts();
+  }, []);
+
+  const categories = [
+    { name: "Plantas de exterior", slug: "exterior" },
+    { name: "Plantas de interior", slug: "interior" }
+  ];
 
   return (
     <div className="w-full">
@@ -31,10 +45,10 @@ export default function HomePage() {
         <div
           className="absolute inset-0 opacity-40"
           style={{
-            backgroundImage: "url('/hero-plants.jpg')",
+            backgroundImage: "url('https://pahjkcjiwxhohqfuurhw.supabase.co/storage/v1/object/sign/home/sala_estar.webp?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84MGY1NjYyOS1hZmNmLTQ0YTItYTE3NS0xNzVjMjE3MTJlNWEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJob21lL3NhbGFfZXN0YXIud2VicCIsImlhdCI6MTc2MzY4NzM4MiwiZXhwIjoxNzY0MjkyMTgyfQ.C_a4QpDh_wpRI964ijWqGOa83d2jUqUsXUlE6SObhaI')",
             backgroundSize: "cover",
             backgroundPosition: "center",
-            transform: `translateY(${scrollPosition * 0.5}px)`,
+            transform: `translateX(${scrollPosition * 0.1}px)`,
             transition: "transform 0.1s ease-out",
           }}
         />
@@ -243,9 +257,9 @@ export default function HomePage() {
                 <div className="bg-gray-50 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
                   {/* Image */}
                   <div className="relative w-full pt-[100%] bg-gradient-to-br from-gray-100 to-gray-50 overflow-hidden">
-                    {product.priceOffer > 0 && (
+                    {product.price_offer > 0 && (
                       <div className="absolute top-4 right-4 z-10 bg-[#004E09] text-white px-3 py-1 rounded-full text-sm font-bold">
-                        -{Math.round(((product.price - product.priceOffer) / product.price) * 100)}%
+                        -{Math.round(((product.price - product.price_offer) / product.price) * 100)}%
                       </div>
                     )}
                     <img
@@ -267,11 +281,10 @@ export default function HomePage() {
                         {[...Array(5)].map((_, i) => (
                           <span
                             key={i}
-                            className={`text-sm ${
-                              i < Math.round(product.rating.rate)
-                                ? "text-yellow-400"
-                                : "text-gray-300"
-                            }`}
+                            className={`text-sm ${i < Math.round(product.rating.rate)
+                              ? "text-yellow-400"
+                              : "text-gray-300"
+                              }`}
                           >
                             ★
                           </span>
@@ -285,9 +298,9 @@ export default function HomePage() {
                     {/* Price */}
                     <div className="flex items-center gap-2 mb-4">
                       <span className="text-2xl font-black text-[#004E09]">
-                        ${product.priceOffer > 0 ? product.priceOffer.toLocaleString() : product.price.toLocaleString()}
+                        ${product.price_offer > 0 ? product.price_offer.toLocaleString() : product.price.toLocaleString()}
                       </span>
-                      {product.priceOffer > 0 && (
+                      {product.price_offer > 0 && (
                         <span className="text-sm text-gray-400 line-through">
                           ${product.price.toLocaleString()}
                         </span>
@@ -296,11 +309,10 @@ export default function HomePage() {
 
                     {/* Stock status */}
                     <p
-                      className={`text-xs font-semibold ${
-                        product.stock > 0
-                          ? "text-green-600"
-                          : "text-red-600"
-                      }`}
+                      className={`text-xs font-semibold ${product.stock > 0
+                        ? "text-green-600"
+                        : "text-red-600"
+                        }`}
                     >
                       {product.stock > 0
                         ? `${product.stock} disponibles`

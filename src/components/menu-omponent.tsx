@@ -39,7 +39,7 @@ export function MenuComponent() {
 
                 <ul className="hidden tablet:flex gap-8 mt-1 absolute left-1/2 transform -translate-x-1/2">
                     <li className="text-xl hover:opacity-70 desktop-md:text-[1.1rem]">
-                        <Link href="/">Inicio</Link>
+                        <Link href="/home">Home</Link>
                     </li>
                     <li className="text-xl hover:opacity-70 desktop-md:text-[1.1rem]">
                         <Link href="/">Catálogo</Link>
@@ -59,7 +59,7 @@ export function MenuComponent() {
                                 </>
                             ) : (
                                 <>
-                                    <Link 
+                                    <Link
                                         href="/account/login"
                                         className="text-[1.3rem] font-medium text-[#004E09] cursor-pointer hover:opacity-70 desktop-md:text-[1.1rem]"
                                     >
