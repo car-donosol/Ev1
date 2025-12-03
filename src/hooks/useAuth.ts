@@ -1,10 +1,5 @@
 import { useEffect, useState } from 'react';
-
-export interface User {
-  id: number;
-  name: string;
-  email: string;
-}
+import type { User } from '@/types/user.types';
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
@@ -30,3 +25,6 @@ export function useAuth() {
 
   return { user, isLoading, logout };
 }
+
+// Export User type for backward compatibility
+export type { User };

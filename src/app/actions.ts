@@ -1,5 +1,4 @@
 'use server';
-import { users } from "@/db/users";
 import { cookies } from "next/headers";
 import { supabase } from "@/db/supabase";
 
@@ -109,41 +108,26 @@ export async function getProductsByCategoryFromSupabase(category: string) {
   }
 }
 
-// Función auxiliar para obtener usuarios de localStorage (simulado en cookie)
-async function getUsersFromStorage() {
-  const cookiesStore = await cookies();
-  const userCookie = cookiesStore.get("users")?.value;
-  if (userCookie) {
-    try {
-      const cookieUsers = JSON.parse(userCookie);
-      return Array.isArray(cookieUsers) ? cookieUsers : [];
-    } catch (err) {
-      console.error("Invalid cookie format:", err);
-      return [];
-    }
-  }
-  return [];
-}
-
-// Función auxiliar para guardar usuarios en localStorage (simulado en cookie)
-async function saveUsersToStorage(usersList: any[]) {
-  const cookiesStore = await cookies();
-  cookiesStore.set({
-    name: 'users',
-    value: JSON.stringify(usersList),
-    path: '/',
-    maxAge: 60 * 60 * 24 * 365 // 1 año
-  });
-}
+// ===========================
+// AUTHENTICATION - RAILWAY API
+// ===========================
 
 export async function register(data: FormData) {
   try {
-    const name = data.get("name")?.toString();
+    const { registerUser } = await import('@/lib/railway-api');
+
+    const run = parseInt(data.get("run")?.toString() || "0");
+    const dv = parseInt(data.get("dv")?.toString() || "0");
+    const pnombre = data.get("pnombre")?.toString();
+    const snombre = data.get("snombre")?.toString();
+    const appaterno = data.get("appaterno")?.toString();
+    const apmaterno = data.get("apmaterno")?.toString();
     const email = data.get("email")?.toString();
+    const telefono = parseInt(data.get("telefono")?.toString() || "0");
     const password = data.get("password")?.toString();
 
-    if (!name || !email || !password) {
-      return { success: false, message: "Todos los campos son requeridos" };
+    if (!pnombre || !appaterno || !apmaterno || !email || !password) {
+      return { success: false, message: "Todos los campos obligatorios son requeridos" };
     }
 
     // Validar longitud de contraseña
@@ -151,34 +135,34 @@ export async function register(data: FormData) {
       return { success: false, message: "La contraseña debe tener al menos 6 caracteres" };
     }
 
-    // Verificar si el email ya existe en users.ts
-    const existingUser = users.find(u => u.email === email);
-    if (existingUser) {
-      return { success: false, message: "Este correo ya está registrado" };
-    }
-
-    // Verificar en localStorage (cookie)
-    const storageUsers = await getUsersFromStorage();
-    const existingStorageUser = storageUsers.find((u: any) => u.email === email);
-    if (existingStorageUser) {
-      return { success: false, message: "Este correo ya está registrado" };
-    }
-
-    // Crear nuevo usuario
-    const newUser = {
-      id: Date.now(), // ID único basado en timestamp
-      name,
+    const userData = {
+      run,
+      dv,
+      pnombre,
+      snombre,
+      appaterno,
+      apmaterno,
       email,
+      telefono,
       password
     };
 
-    // Agregar usuario a la lista de localStorage
-    storageUsers.push(newUser);
-    await saveUsersToStorage(storageUsers);
+    const user = await registerUser(userData);
+
+    if (!user) {
+      return { success: false, message: "Error al registrar usuario" };
+    }
 
     return {
       success: true,
-      user: { id: newUser.id, name: newUser.name, email: newUser.email },
+      user: {
+        id: user.id,
+        pnombre: user.pnombre,
+        snombre: user.snombre,
+        appaterno: user.appaterno,
+        apmaterno: user.apmaterno,
+        email: user.email
+      },
       message: "Usuario registrado exitosamente"
     };
   } catch (error) {
@@ -196,29 +180,33 @@ export async function login(data: FormData) {
       return { success: false, message: "Email y contraseña son requeridos" };
     }
 
-    // Buscar primero en users.ts (usuarios predefinidos)
-    let user = users.find(u => u.email === email && u.password === password);
+    // Llamar a la API de Railway para autenticar
+    const { loginUser } = await import('@/lib/railway-api');
+    const result = await loginUser({ email, password });
 
-    // Si no se encuentra, buscar en localStorage (usuarios registrados)
-    if (!user) {
-      const storageUsers = await getUsersFromStorage();
-      user = storageUsers.find(
-        (u: any) => u.email === email && u.password === password
-      );
-    }
-
-    if (!user) {
-      return { success: false, message: "Email o contraseña incorrectos" };
+    if (!result.success || !result.user) {
+      return {
+        success: false,
+        message: result.message || "Email o contraseña incorrectos"
+      };
     }
 
     // Retornar usuario sin la contraseña
-    const { password: _, ...userWithoutPassword } = user;
-    return { success: true, user: userWithoutPassword };
+    const { password: _, ...userWithoutPassword } = result.user;
+    return {
+      success: true,
+      user: userWithoutPassword,
+      message: "Inicio de sesión exitoso"
+    };
   } catch (error) {
     console.error("Login error:", error);
     return { success: false, message: "Error inesperado al iniciar sesión" };
   }
 }
+
+// ===========================
+// SHOPPING CART
+// ===========================
 
 function parseCartCookie(value?: string | null): CartCookieItem[] {
   if (!value) return [];

@@ -1,11 +1,42 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import type { User } from "@/hooks/useAuth";
+import type { User } from "@/types/user.types";
 
 interface UserMenuProps {
   user: User;
   onLogout: () => void;
+}
+
+/**
+ * Helper function to format user's display name (primer nombre + apellido paterno)
+ * Se muestra en el navbar para mantener compacto
+ */
+function getUserDisplayName(user: User): string {
+  return `${user.pnombre} ${user.appaterno}`;
+}
+
+/**
+ * Helper function to format user's full name (for menu details)
+ */
+function getUserFullName(user: User): string {
+  const parts = [
+    user.pnombre,
+    user.snombre,
+    user.appaterno,
+    user.apmaterno
+  ].filter(Boolean);
+  return parts.join(' ');
+}
+
+/**
+ * Helper function to get user's initials
+ */
+function getUserInitials(user: User): string {
+  if (user.pnombre && user.appaterno) {
+    return `${user.pnombre.charAt(0)}${user.appaterno.charAt(0)}`.toUpperCase();
+  }
+  return user.pnombre?.charAt(0).toUpperCase() || 'U';
 }
 
 export function UserMenu({ user, onLogout }: UserMenuProps) {
@@ -31,6 +62,10 @@ export function UserMenu({ user, onLogout }: UserMenuProps) {
     onLogout();
   };
 
+  const displayName = getUserDisplayName(user); // Para el navbar
+  const fullName = getUserFullName(user);       // Para el menú desplegable
+  const initials = getUserInitials(user);
+
   return (
     <div ref={menuRef} className="relative">
       {/* Botón del usuario */}
@@ -39,15 +74,14 @@ export function UserMenu({ user, onLogout }: UserMenuProps) {
         className="flex items-center gap-2 hover:opacity-80 transition-opacity"
       >
         <div className="w-8 h-8 bg-[#004E09] rounded-full flex items-center justify-center text-white text-sm font-bold">
-          {user.name.charAt(0).toUpperCase()}
+          {initials}
         </div>
         <span className="text-[1.1rem] font-medium text-gray-800 hidden md:inline">
-          {user.name}
+          {displayName}
         </span>
         <svg
-          className={`w-4 h-4 transition-transform duration-300 hidden md:inline ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`w-4 h-4 transition-transform duration-300 hidden md:inline ${isOpen ? "rotate-180" : ""
+            }`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -67,7 +101,7 @@ export function UserMenu({ user, onLogout }: UserMenuProps) {
           {/* Header con info del usuario */}
           <div className="px-4 py-3 border-b border-gray-100">
             <p className="text-sm text-gray-600">Sesión iniciada como</p>
-            <p className="font-semibold text-gray-800">{user.name}</p>
+            <p className="font-semibold text-gray-800">{fullName}</p>
             <p className="text-xs text-gray-500">{user.email}</p>
           </div>
 

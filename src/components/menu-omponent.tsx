@@ -4,7 +4,7 @@ import { SearchButton } from "@/components/client/search-button"
 import { CartButton } from "@/components/client/cart-button"
 import { UserMenu } from "@/components/client/user-menu"
 import { useState, useEffect } from "react"
-import type { User } from "@/hooks/useAuth"
+import type { User } from "@/types/user.types"
 
 export function MenuComponent() {
     const [user, setUser] = useState<User | null>(null);
