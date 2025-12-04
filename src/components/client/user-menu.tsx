@@ -14,13 +14,14 @@ export function UserMenu({ user, onLogout }: UserMenuProps) {
 
   // Construcción segura del nombre
   const fullName =
-    `${user?.pnombre ?? ""}`.trim() ||
+    `${(user as any)?.pnombre ?? user?.name ?? ""}`.trim() ||
     user?.email?.split("@")[0] ||
     "Usuario";
 
   // Inicial segura
   const initial = (
-    user?.pnombre?.charAt(0) ??
+    (user as any)?.pnombre?.charAt(0) ??
+    user?.name?.charAt(0) ??
     user?.email?.charAt(0) ??
     "U"
   ).toUpperCase();
