@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { apis } from "@/apis";
 import { AddToCartButton } from "@/components/client/add-to-cart-button";
+
 interface PageProps {
   params: Promise<{ id: string }>;
 }
@@ -8,6 +9,7 @@ interface PageProps {
 export default async function ProductPage({ params }: PageProps) {
   const { id } = await params;
 
+  // El 'id' aquí es el slug (ej: "cuna-de-moises")
   const productRes = await fetch(`${apis.products}/${id}`, {
     cache: "no-store",
   });
@@ -33,6 +35,9 @@ export default async function ProductPage({ params }: PageProps) {
 
   const product = await productRes.json();
 
+  // Asegurarse de que product.id sea un número
+  const numericProductId = typeof product.id === 'string' ? parseInt(product.id, 10) : product.id;
+
   let relatedProducts: any[] = [];
 
   try {
@@ -40,7 +45,7 @@ export default async function ProductPage({ params }: PageProps) {
     if (allRes.ok) {
       const all = await allRes.json();
       interface Product {
-        id: string;
+        id: string | number;
         title: string;
         image: string;
         price: number;
@@ -58,7 +63,7 @@ export default async function ProductPage({ params }: PageProps) {
       }
 
       relatedProducts = (Array.isArray(all) ? all : (all as ProductsApiResponse).products)
-        .filter((p: Product) => p.id !== product.id)
+        .filter((p: Product) => p.slug !== product.slug) // Comparar por slug en vez de id
         .sort(() => Math.random() - 0.5)
         .slice(0, 4);
     }
@@ -163,7 +168,7 @@ export default async function ProductPage({ params }: PageProps) {
           </div>
 
           <div className="mb-6">
-            <AddToCartButton productId={product.id} stock={product.stock} />
+            <AddToCartButton productSlug={product.slug} stock={product.stock} />
           </div>
 
           <Link
