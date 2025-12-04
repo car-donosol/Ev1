@@ -1,37 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import type { User } from "@/types/user.types";
-
-/**
- * Helper function to format user's full name
- */
-function getUserFullName(user: User): string {
-  const parts = [
-    user.pnombre,
-    user.snombre,
-    user.appaterno,
-    user.apmaterno
-  ].filter(Boolean);
-  return parts.join(' ');
-}
-
-/**
- * Helper function to get user's initials
- */
-function getUserInitials(user: User): string {
-  if (user.pnombre && user.appaterno) {
-    return `${user.pnombre.charAt(0)}${user.appaterno.charAt(0)}`.toUpperCase();
-  }
-  return user.pnombre?.charAt(0).toUpperCase() || 'U';
-}
-
-/**
- * Helper function to format RUN with DV
- */
-function formatRUN(run: number, dv: number): string {
-  return `${run.toLocaleString('es-CL')}-${dv}`;
-}
+import type { User } from "@/hooks/useAuth";
 
 export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null);
@@ -65,12 +35,9 @@ export default function ProfilePage() {
     return null;
   }
 
-  const fullName = getUserFullName(user);
-  const initials = getUserInitials(user);
-
   return (
     <div className="container mx-auto px-4 py-8 min-h-screen">
-      <Link
+      <Link 
         href="/"
         className="text-[#004E09] hover:opacity-70 font-medium mb-6 inline-block"
       >
@@ -84,10 +51,10 @@ export default function ProfilePage() {
           {/* Avatar y nombre */}
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 bg-[#004E09] rounded-full flex items-center justify-center text-white text-3xl font-bold">
-              {initials}
+              {user.name.charAt(0).toUpperCase()}
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-gray-800">{fullName}</h2>
+              <h2 className="text-2xl font-bold text-gray-800">{user.name}</h2>
               <p className="text-gray-600">{user.email}</p>
             </div>
           </div>
@@ -99,63 +66,17 @@ export default function ProfilePage() {
             <h3 className="text-lg font-semibold text-gray-800 mb-4">Información de la Cuenta</h3>
             <div className="space-y-4">
               <div>
-                <label className="text-sm text-gray-600">RUN</label>
-                <p className="text-gray-800 font-medium">{formatRUN(user.run, user.dv)}</p>
+                <label className="text-sm text-gray-600">ID de Usuario</label>
+                <p className="text-gray-800 font-medium">{user.id}</p>
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm text-gray-600">Primer Nombre</label>
-                  <p className="text-gray-800 font-medium">{user.pnombre}</p>
-                </div>
-                {user.snombre && (
-                  <div>
-                    <label className="text-sm text-gray-600">Segundo Nombre</label>
-                    <p className="text-gray-800 font-medium">{user.snombre}</p>
-                  </div>
-                )}
+              <div>
+                <label className="text-sm text-gray-600">Nombre</label>
+                <p className="text-gray-800 font-medium">{user.name}</p>
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm text-gray-600">Apellido Paterno</label>
-                  <p className="text-gray-800 font-medium">{user.appaterno}</p>
-                </div>
-                <div>
-                  <label className="text-sm text-gray-600">Apellido Materno</label>
-                  <p className="text-gray-800 font-medium">{user.apmaterno}</p>
-                </div>
-              </div>
-
               <div>
                 <label className="text-sm text-gray-600">Correo Electrónico</label>
                 <p className="text-gray-800 font-medium">{user.email}</p>
               </div>
-
-              <div>
-                <label className="text-sm text-gray-600">Teléfono</label>
-                <p className="text-gray-800 font-medium">+56 {user.telefono}</p>
-              </div>
-
-              {user.fechareg && (
-                <div>
-                  <label className="text-sm text-gray-600">Fecha de Registro</label>
-                  <p className="text-gray-800 font-medium">
-                    {new Date(user.fechareg).toLocaleDateString('es-CL', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
-                  </p>
-                </div>
-              )}
-
-              {user.id && (
-                <div>
-                  <label className="text-sm text-gray-600">ID de Usuario</label>
-                  <p className="text-gray-800 font-medium">{user.id}</p>
-                </div>
-              )}
             </div>
           </div>
 

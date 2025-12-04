@@ -4,42 +4,45 @@ import { SearchButton } from "@/components/client/search-button"
 import { CartButton } from "@/components/client/cart-button"
 import { UserMenu } from "@/components/client/user-menu"
 import { useState, useEffect } from "react"
-import type { User } from "@/types/user.types"
+import type { User } from "@/hooks/useAuth"
 
 export function MenuComponent() {
-    const [user, setUser] = useState<User | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [account, setAccount] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         try {
-            const savedUser = localStorage.getItem('usuario');
-            if (savedUser) {
-                setUser(JSON.parse(savedUser));
+            const stored = localStorage.getItem("account");
+            if (stored) {
+                setAccount(JSON.parse(stored));
             }
-        } catch (err) {
-            console.error('Error loading user:', err);
+        } catch (error) {
+            console.error("Error reading account", error);
         } finally {
-            setIsLoading(false);
+            setLoading(false);
         }
     }, []);
 
     const handleLogout = () => {
-        localStorage.removeItem('usuario');
-        setUser(null);
+        localStorage.removeItem("account");
+        setAccount(null);
     };
 
     return (
         <header className="max-w-[1400px] mx-auto w-full">
             <nav className="w-full flex items-center justify-between p-[1.2rem] mt-2 desktop-md:px-20 transition-all duration-300 relative">
+
+                {/* Logo */}
                 <div className="mb-2 flex items-center justify-center space-x-10">
                     <Link href="/" className="cursor-pointer hover:opacity-70">
                         <img src="/logo.png" alt="Logo" className="h-14 desktop-md:h-12" />
                     </Link>
                 </div>
 
+                {/* Menú principal */}
                 <ul className="hidden tablet:flex gap-8 mt-1 absolute left-1/2 transform -translate-x-1/2">
                     <li className="text-xl hover:opacity-70 desktop-md:text-[1.1rem]">
-                        <Link href="/home">Home</Link>
+                        <Link href="/">Inicio</Link>
                     </li>
                     <li className="text-xl hover:opacity-70 desktop-md:text-[1.1rem]">
                         <Link href="/">Catálogo</Link>
@@ -49,13 +52,15 @@ export function MenuComponent() {
                     </li>
                 </ul>
 
+                {/* Acciones */}
                 <div className="hidden sm:flex items-center justify-center space-x-6">
-                    {!isLoading && (
+
+                    {!loading && (
                         <>
-                            {user ? (
+                            {account ? (
                                 <>
-                                    <UserMenu user={user} onLogout={handleLogout} />
-                                    <div className="w-[3px] h-[30px] bg-[#004E09]"></div>
+                                    <UserMenu user={account} onLogout={handleLogout} />
+                                    <div className="w-[3px] h-[30px] bg-[#004E09]" />
                                 </>
                             ) : (
                                 <>
@@ -65,7 +70,7 @@ export function MenuComponent() {
                                     >
                                         Acceder
                                     </Link>
-                                    <div className="w-[3px] h-[30px] bg-[#004E09]"></div>
+                                    <div className="w-[3px] h-[30px] bg-[#004E09]" />
                                 </>
                             )}
                         </>
@@ -76,5 +81,5 @@ export function MenuComponent() {
                 </div>
             </nav>
         </header>
-    )
+    );
 }

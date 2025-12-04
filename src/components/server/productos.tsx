@@ -1,13 +1,11 @@
 "use server"
 import Link from "next/link";
-import { getProducts } from "@/db/products";
+import { products } from "@/db/products";
 import { ProductosClient } from "@/components/client/productos-client";
 
 export default async function Productos() {
-    const products = await getProducts();
+    await new Promise(resolve => setTimeout(() => resolve(""), 2000));
     return (
         <ProductosClient products={products as any} />
     )
 }
-
-
