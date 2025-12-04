@@ -1,8 +1,6 @@
 import Link from "next/link";
-import { products } from "@/db/products";
+import { apis } from "@/apis";
 import { AddToCartButton } from "@/components/client/add-to-cart-button";
-import { Suspense } from "react";
-
 interface PageProps {
   params: Promise<{ id: string }>;
 }
@@ -10,16 +8,18 @@ interface PageProps {
 export default async function ProductPage({ params }: PageProps) {
   const { id } = await params;
 
-  const product = products.find((p) => p.slug === id);
+  const productRes = await fetch(`${apis.products}/${id}`, {
+    cache: "no-store",
+  });
 
-  if (!product) {
+  if (!productRes.ok) {
     return (
       <div className="container mx-auto px-4 py-20 text-center">
         <h1 className="text-3xl font-bold text-gray-800 mb-4">
           😕 Producto no encontrado
         </h1>
         <p className="text-gray-600 mb-8">
-          Es posible que el producto haya sido eliminado o que el enlace sea incorrecto.
+          Es posible que el producto no exista o el enlace sea incorrecto.
         </p>
         <Link
           href="/"
@@ -31,10 +31,40 @@ export default async function ProductPage({ params }: PageProps) {
     );
   }
 
-  const relatedProducts = products
-    .filter((p) => p.id !== product.id)
-    .sort(() => Math.random() - 0.5)
-    .slice(0, 4);
+  const product = await productRes.json();
+
+  let relatedProducts: any[] = [];
+
+  try {
+    const allRes = await fetch(apis.products, { cache: "no-store" });
+    if (allRes.ok) {
+      const all = await allRes.json();
+      interface Product {
+        id: string;
+        title: string;
+        image: string;
+        price: number;
+        description: string;
+        rating: {
+          rate: number;
+          count: number;
+        };
+        stock: number;
+        slug: string;
+      }
+
+      interface ProductsApiResponse {
+        products: Product[];
+      }
+
+      relatedProducts = (Array.isArray(all) ? all : (all as ProductsApiResponse).products)
+        .filter((p: Product) => p.id !== product.id)
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 4);
+    }
+  } catch (e) {
+    console.error("Error cargando relacionados:", e);
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -68,11 +98,10 @@ export default async function ProductPage({ params }: PageProps) {
                 {[...Array(5)].map((_, i) => (
                   <span
                     key={i}
-                    className={`text-lg ${
-                      i < Math.round(product.rating.rate)
+                    className={`text-lg ${i < Math.round(product.rating.rate)
                         ? "text-yellow-400"
                         : "text-gray-300"
-                    }`}
+                      }`}
                   >
                     ★
                   </span>
@@ -105,28 +134,27 @@ export default async function ProductPage({ params }: PageProps) {
           </div>
 
           <div
-            className={`mb-6 p-4 rounded-lg ${
-              product.stock > 10
+            className={`mb-6 p-4 rounded-lg ${product.stock > 10
                 ? "bg-green-50 border border-green-200"
                 : product.stock > 0
-                ? "bg-orange-50 border border-orange-200"
-                : "bg-red-50 border border-red-200"
-            }`}
+                  ? "bg-orange-50 border border-orange-200"
+                  : "bg-red-50 border border-red-200"
+              }`}
           >
             <p className="text-gray-700">
               <span className="font-semibold">Stock disponible:</span>
               <span
-                className={`ml-2 font-bold ${
-                  product.stock > 10
+                className={`ml-2 font-bold ${product.stock > 10
                     ? "text-green-600"
                     : product.stock > 0
-                    ? "text-orange-600"
-                    : "text-red-600"
-                }`}
+                      ? "text-orange-600"
+                      : "text-red-600"
+                  }`}
               >
                 {product.stock} unidades
               </span>
             </p>
+
             {product.stock <= 5 && product.stock > 0 && (
               <p className="text-xs text-orange-600 mt-2">
                 ⚠️ Pocas unidades disponibles
@@ -134,14 +162,9 @@ export default async function ProductPage({ params }: PageProps) {
             )}
           </div>
 
-          <Suspense fallback={<div className="h-12 bg-gray-100 rounded-lg animate-pulse" />}>
-            <div className="mb-6">
-              <AddToCartButton
-                productId={product.id}
-                stock={product.stock}
-              />
-            </div>
-          </Suspense>
+          <div className="mb-6">
+            <AddToCartButton productId={product.id} stock={product.stock} />
+          </div>
 
           <Link
             href="/"
@@ -157,6 +180,7 @@ export default async function ProductPage({ params }: PageProps) {
           <h2 className="text-3xl font-bold text-gray-800 mb-8">
             Productos relacionados
           </h2>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {relatedProducts.map((p) => (
               <Link key={p.id} href={`/planta/${p.slug}`} className="group">
@@ -168,10 +192,12 @@ export default async function ProductPage({ params }: PageProps) {
                       className="absolute top-0 left-0 w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-300"
                     />
                   </div>
+
                   <div className="p-4 flex flex-col flex-grow">
                     <h3 className="font-medium text-sm text-gray-800 line-clamp-2 mb-2 group-hover:text-[#004E09] transition-colors">
                       {p.title}
                     </h3>
+
                     <div className="flex items-center gap-1 mb-3">
                       <span className="text-yellow-400 text-xs">★</span>
                       <span className="font-semibold text-xs text-gray-800">
@@ -181,14 +207,15 @@ export default async function ProductPage({ params }: PageProps) {
                         ({p.rating.count})
                       </span>
                     </div>
+
                     <div className="mt-auto">
                       <p className="font-bold text-lg text-[#004E09] mb-2">
                         ${p.price.toLocaleString("es-CL")}
                       </p>
+
                       <p
-                        className={`text-xs font-medium ${
-                          p.stock > 0 ? "text-green-600" : "text-red-600"
-                        }`}
+                        className={`text-xs font-medium ${p.stock > 0 ? "text-green-600" : "text-red-600"
+                          }`}
                       >
                         {p.stock > 0
                           ? `${p.stock} disponibles`
@@ -200,8 +227,10 @@ export default async function ProductPage({ params }: PageProps) {
               </Link>
             ))}
           </div>
+
         </div>
       )}
+
     </div>
   );
 }

@@ -1,12 +1,9 @@
-import { Suspense } from "react";
-import Productos from "@/components/server/productos";
+import { Productos } from "@/components/client/productos-client";
 
 export default function Home() {
   return (
     <div className="desktop-md:px-6">
-      <Suspense fallback={<div>Cargando productos...</div>}>
-        <Productos />
-      </Suspense>
+      <Productos />
     </div>
   );
 }
