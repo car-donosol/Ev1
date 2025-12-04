@@ -1,23 +1,54 @@
 "use client";
 
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { addToCart } from "@/app/actions";
 import { CartContext, type CartContextType } from "@/context/cart-context";
-import { products } from "@/db/products";
+import { apis } from "@/apis";
 
 interface AddToCartButtonProps {
   productId: number;
   stock: number;
 }
 
+interface Product {
+  id: number;
+  title: string;
+  image: string;
+  price: number;
+  priceOffer: number;
+  description: string;
+  rating: { rate: number; count: number };
+  stock: number;
+  slug: string;
+  category: "interior" | "exterior";
+}
+
 export function AddToCartButton({ productId, stock }: AddToCartButtonProps) {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [product, setProduct] = useState<Product | null>(null);
   const { addItem, setVisible } = useContext(CartContext) as CartContextType;
 
+  // Cargar el producto al montar el componente
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch(`${apis.products}/${productId}`);
+        if (res.ok) {
+          const data = await res.json();
+          setProduct(data);
+        }
+      } catch (err) {
+        console.error("Error fetching product:", err);
+      }
+    };
+
+    fetchProduct();
+  }, [productId]);
+
   const handleAddToCart = async () => {
-    if (quantity <= 0 || quantity > stock) return;
+    if (quantity <= 0 || quantity > stock || !product) return;
 
     setLoading(true);
     setMessage(null);
@@ -27,19 +58,14 @@ export function AddToCartButton({ productId, stock }: AddToCartButtonProps) {
       const result = await addToCart(productId, quantity);
 
       if (result.success) {
-        // Encontrar el producto para obtener sus detalles
-        const product = products.find((p) => p.id === productId);
-
-        if (product) {
-          // Actualizar el contexto del carrito en tiempo real
-          addItem({
-            id: product.id,
-            title: product.title,
-            image: product.image,
-            price: product.price,
-            quantity: quantity,
-          });
-        }
+        // Actualizar el contexto del carrito en tiempo real
+        addItem({
+          id: product.id,
+          title: product.title,
+          image: product.image,
+          price: product.price,
+          quantity: quantity,
+        });
 
         setMessage("¡Producto agregado al carrito!");
         setQuantity(1);
@@ -87,7 +113,7 @@ export function AddToCartButton({ productId, stock }: AddToCartButtonProps) {
 
       <button
         onClick={handleAddToCart}
-        disabled={loading || stock === 0}
+        disabled={loading || stock === 0 || !product}
         className={`w-full py-3 rounded-md font-semibold transition-colors duration-300 ${
           stock === 0
             ? "bg-gray-400 text-white cursor-not-allowed"

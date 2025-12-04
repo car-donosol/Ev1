@@ -83,39 +83,6 @@ export async function register(data: FormData) {
     }
 }
 
-export async function login(data: FormData) {
-    try {
-        const email = data.get("email")?.toString();
-        const password = data.get("password")?.toString();
-
-        if (!email || !password) {
-            return { success: false, message: "Email y contraseña son requeridos" };
-        }
-
-        // Buscar primero en users.ts (usuarios predefinidos)
-        let user = users.find(u => u.email === email && u.password === password);
-
-        // Si no se encuentra, buscar en localStorage (usuarios registrados)
-        if (!user) {
-            const storageUsers = await getUsersFromStorage();
-            user = storageUsers.find(
-                (u: any) => u.email === email && u.password === password
-            );
-        }
-
-        if (!user) {
-            return { success: false, message: "Email o contraseña incorrectos" };
-        }
-
-        // Retornar usuario sin la contraseña
-        const { password: _, ...userWithoutPassword } = user;
-        return { success: true, user: userWithoutPassword };
-    } catch (error) {
-        console.error("Login error:", error);
-        return { success: false, message: "Error inesperado al iniciar sesión" };
-    }
-}
-
 function parseCartCookie(value?: string | null): CartCookieItem[] {
     if (!value) return [];
     try {
