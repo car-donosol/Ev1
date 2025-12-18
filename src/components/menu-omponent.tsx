@@ -143,7 +143,9 @@ export function MenuComponent() {
                             <>
                                 {account ? (
                                     <div className="flex flex-col items-center gap-2">
-                                        <span className="font-medium">Hola, {account.username}</span>
+                                        <span className="font-medium">
+                                            Hola, {(account as any)?.pnombre ?? account.name ?? account.email?.split("@")[0] ?? "Usuario"}
+                                        </span>
                                         <button 
                                             onClick={() => { handleLogout(); setMobileMenuOpen(false); }}
                                             className="text-red-600 text-sm hover:underline"
