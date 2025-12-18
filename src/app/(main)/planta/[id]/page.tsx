@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { apis } from "@/apis";
 import { AddToCartButton } from "@/components/client/add-to-cart-button";
+import { CurrencyPrice } from "@/components/client/currency-price";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -124,8 +125,9 @@ export default async function ProductPage({ params }: PageProps) {
 
           <div className="mb-6 pb-6 border-b border-gray-200">
             <p className="text-5xl font-bold text-[#004E09]">
-              ${product.price.toLocaleString("es-CL")}
+              <CurrencyPrice amount={product.price} />
             </p>
+          </div>
             <p className="text-sm text-gray-500 mt-2">Precio por unidad</p>
           </div>
 

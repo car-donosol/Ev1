@@ -5,6 +5,7 @@ import { SearchProvider } from "@/context/search-context";
 import { CartProvider } from "@/context/cart-context";
 import { FilterProvider } from "@/context/filter-context";
 import { FilterVisibilityProvider } from "@/context/filter-visibility-context";
+import { CurrencyProvider } from "@/context/currency-context";
 
 import { MenuComponent } from "@/components/menu-omponent";
 import { CartComponent } from "@/components/client/cart-component";
@@ -31,25 +32,25 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es">
       <body className={`${poppins.className} min-h-screen flex flex-col`}>
-        <SearchProvider>
-          <CartProvider>
-            <FilterProvider>
-              <FilterVisibilityProvider>
-                <MenuComponent />
-                <CartComponent />
-                <SearchComponent />
-                <FilterButton />
-                <FilterMenu />
-                
-                <main className="max-w-[1400px] mx-auto flex-1 w-full">
-                  {children}
-                </main>
-                
-                <FooterComponent />
-              </FilterVisibilityProvider>
-            </FilterProvider>
-          </CartProvider>
-        </SearchProvider>
+        <CurrencyProvider>
+          <SearchProvider>
+            <CartProvider>
+              <FilterProvider>
+                <FilterVisibilityProvider>
+                  <MenuComponent />
+                  <CartComponent />
+                  <SearchComponent />
+                  <FilterButton />
+                  <FilterMenu />
+                  <main className="max-w-[1400px] mx-auto flex-1 w-full">
+                    {children}
+                  </main>
+                  <FooterComponent />
+                </FilterVisibilityProvider>
+              </FilterProvider>
+            </CartProvider>
+          </SearchProvider>
+        </CurrencyProvider>
       </body>
     </html>
   );

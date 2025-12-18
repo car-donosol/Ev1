@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useCurrency } from "@/context/currency-context";
 
 interface Order {
   id: string;
@@ -35,6 +36,7 @@ interface Order {
 export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [mounted, setMounted] = useState(false);
+  const { formatFromCLP } = useCurrency();
 
   useEffect(() => {
     setMounted(true);
@@ -156,7 +158,7 @@ export default function OrdersPage() {
                     <div>
                       <p className="text-sm text-gray-600">Total</p>
                       <p className="font-bold text-gray-800">
-                        ${order.total.toLocaleString("es-CL")}
+                        {formatFromCLP(order.total)}
                       </p>
                     </div>
                   </div>
@@ -195,7 +197,7 @@ export default function OrdersPage() {
                         </p>
                       </div>
                       <p className="font-semibold text-gray-800">
-                        ${(item.price * item.quantity).toLocaleString("es-CL")}
+                        {formatFromCLP(item.price * item.quantity)}
                       </p>
                     </div>
                   ))}
@@ -238,13 +240,13 @@ export default function OrdersPage() {
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Subtotal</span>
                       <span className="font-medium text-gray-800">
-                        ${order.subtotal.toLocaleString("es-CL")}
+                        {formatFromCLP(order.subtotal)}
                       </span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">IVA (19%)</span>
                       <span className="font-medium text-gray-800">
-                        ${order.tax.toLocaleString("es-CL")}
+                        {formatFromCLP(order.tax)}
                       </span>
                     </div>
                     <div className="flex justify-between text-sm">
@@ -255,14 +257,14 @@ export default function OrdersPage() {
                             Gratis
                           </span>
                         ) : (
-                          `$${order.shipping.toLocaleString("es-CL")}`
+                          `${formatFromCLP(order.shipping)}`
                         )}
                       </span>
                     </div>
                     <div className="flex justify-between pt-2 border-t border-gray-300">
                       <span className="font-bold text-gray-800">Total</span>
                       <span className="font-bold text-[#004E09] text-lg">
-                        ${order.total.toLocaleString("es-CL")}
+                        {formatFromCLP(order.total)}
                       </span>
                     </div>
                   </div>

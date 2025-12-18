@@ -4,11 +4,13 @@ import { CartContext, type CartContextType } from "@/context/cart-context";
 import { removeFromCart, updateCartItem, clearCart } from "@/app/actions";
 import { Activity } from "react";
 import Link from "next/link";
+import { useCurrency } from "@/context/currency-context";
 
 export function CartComponent() {
   const context = useContext(CartContext);
   const [loading, setLoading] = useState<boolean>(false);
   const [mounted, setMounted] = useState(false);
+  const { formatFromCLP } = useCurrency();
 
   useEffect(() => {
     setMounted(true);
@@ -96,7 +98,7 @@ export function CartComponent() {
                   />
                   <div className="flex-1 min-w-0">
                     <h3 className="font-medium text-sm line-clamp-2">{item.title}</h3>
-                    <p className="text-sm text-gray-600">${item.price.toLocaleString("es-CL")}</p>
+                    <p className="text-sm text-gray-600">{formatFromCLP(item.price)}</p>
                   </div>
                   <div className="flex flex-col items-end gap-2">
                     <div className="flex items-center gap-1 border border-gray-300 rounded">
@@ -132,7 +134,7 @@ export function CartComponent() {
               <div className="flex justify-between items-center">
                 <span className="font-semibold">Total:</span>
                 <span className="text-lg font-bold text-[#004E09]">
-                  ${total.toLocaleString("es-CL")}
+                  {formatFromCLP(total)}
                 </span>
               </div>
 

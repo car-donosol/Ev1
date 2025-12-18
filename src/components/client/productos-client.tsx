@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useContext, useMemo, useState, useEffect } from "react";
 import { FilterContext } from "@/context/filter-context";
 import { apis } from "@/apis";
+import { useCurrency } from "@/context/currency-context";
 
 interface Product {
   id: number;
@@ -18,6 +19,7 @@ interface Product {
 
 export function Productos() {
   const context = useContext(FilterContext);
+  const { formatFromCLP } = useCurrency();
 
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -176,15 +178,15 @@ export function Productos() {
                     {hasOffer ? (
                       <>
                         <p className="font-bold text-lg text-[#004E09]">
-                          ${product.priceOffer.toLocaleString()}
+                          {formatFromCLP(product.priceOffer)}
                         </p>
                         <p className="text-sm text-gray-500 line-through">
-                          ${product.price.toLocaleString()}
+                          {formatFromCLP(product.price)}
                         </p>
                       </>
                     ) : (
                       <p className="font-bold text-lg text-[#004E09]">
-                        ${product.price.toLocaleString()}
+                        {formatFromCLP(product.price)}
                       </p>
                     )}
                   </div>

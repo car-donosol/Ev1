@@ -2,10 +2,12 @@
 import { useContext, useRef, useEffect } from "react";
 import { FilterContext, type SortBy, type Category } from "@/context/filter-context";
 import { CartContext } from "@/context/cart-context";
+import { useCurrency } from "@/context/currency-context";
 
 export function FilterMenu() {
   const context = useContext(FilterContext);
   const cartContext = useContext(CartContext);
+  const { formatFromCLP } = useCurrency();
   const menuRef = useRef<HTMLDivElement>(null);
 
   if (!context) return null;
@@ -201,7 +203,7 @@ export function FilterMenu() {
             </h4>
             <div className="space-y-3">
               <div>
-                <label className="text-xs text-gray-600 mb-1 block">Precio mínimo: ${priceRange[0].toLocaleString()}</label>
+                <label className="text-xs text-gray-600 mb-1 block">Precio mínimo: {formatFromCLP(priceRange[0])}</label>
                 <input
                   type="range"
                   min={minPrice}
@@ -213,7 +215,7 @@ export function FilterMenu() {
                 />
               </div>
               <div>
-                <label className="text-xs text-gray-600 mb-1 block">Precio máximo: ${priceRange[1].toLocaleString()}</label>
+                <label className="text-xs text-gray-600 mb-1 block">Precio máximo: {formatFromCLP(priceRange[1])}</label>
                 <input
                   type="range"
                   min={minPrice}
@@ -225,8 +227,8 @@ export function FilterMenu() {
                 />
               </div>
               <div className="flex justify-between text-xs text-gray-500">
-                <span>${minPrice.toLocaleString()}</span>
-                <span>${maxPrice.toLocaleString()}</span>
+                <span>{formatFromCLP(minPrice)}</span>
+                <span>{formatFromCLP(maxPrice)}</span>
               </div>
             </div>
           </div>
@@ -260,7 +262,7 @@ export function FilterMenu() {
               {sortBy !== 'relevance' && <li>• Orden: {sortOptions.find(s => s.value === sortBy)?.label}</li>}
               {minRating > 0 && <li>• Rating: {minRating} estrellas o más</li>}
               {(priceRange[0] > minPrice || priceRange[1] < maxPrice) && (
-                <li>• Precio: ${priceRange[0].toLocaleString()} - ${priceRange[1].toLocaleString()}</li>
+                <li>• Precio: {formatFromCLP(priceRange[0])} - {formatFromCLP(priceRange[1])}</li>
               )}
             </ul>
           </div>

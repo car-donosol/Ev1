@@ -3,6 +3,7 @@ import { useContext, useState, useEffect } from "react";
 import { CartContext } from "@/context/cart-context";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useCurrency } from "@/context/currency-context";
 
 interface Order {
   id: string;
@@ -41,6 +42,7 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [orderComplete, setOrderComplete] = useState(false);
   const [currentOrderNumber, setCurrentOrderNumber] = useState<number | null>(null);
+  const { formatFromCLP } = useCurrency();
 
   // Form state
   const [formData, setFormData] = useState({
@@ -544,7 +546,7 @@ export default function CheckoutPage() {
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                   </svg>
-                  Pagar ${total.toLocaleString("es-CL")}
+              Pagar {formatFromCLP(total)}
                 </>
               )}
             </button>
@@ -565,7 +567,7 @@ export default function CheckoutPage() {
                     <p className="text-xs text-gray-500">Cantidad: {item.quantity}</p>
                   </div>
                   <p className="text-sm font-semibold text-gray-800">
-                    ${(item.price * item.quantity).toLocaleString("es-CL")}
+                    {formatFromCLP(item.price * item.quantity)}
                   </p>
                 </div>
               ))}
@@ -574,11 +576,11 @@ export default function CheckoutPage() {
             <div className="space-y-2 pt-4 border-t border-gray-300">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Subtotal</span>
-                <span className="font-medium text-gray-800">${subtotal.toLocaleString("es-CL")}</span>
+                <span className="font-medium text-gray-800">{formatFromCLP(subtotal)}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">IVA (19%)</span>
-                <span className="font-medium text-gray-800">${tax.toLocaleString("es-CL")}</span>
+                <span className="font-medium text-gray-800">{formatFromCLP(tax)}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Envío</span>
@@ -586,7 +588,7 @@ export default function CheckoutPage() {
                   {shipping === 0 ? (
                     <span className="text-green-600 font-semibold">Gratis</span>
                   ) : (
-                    `$${shipping.toLocaleString("es-CL")}`
+                    `${formatFromCLP(shipping)}`
                   )}
                 </span>
               </div>
@@ -600,7 +602,7 @@ export default function CheckoutPage() {
             <div className="flex justify-between items-center pt-4 mt-4 border-t-2 border-gray-300">
               <span className="text-lg font-bold text-gray-800">Total</span>
               <span className="text-2xl font-bold text-[#004E09]">
-                ${total.toLocaleString("es-CL")}
+                {formatFromCLP(total)}
               </span>
             </div>
 
