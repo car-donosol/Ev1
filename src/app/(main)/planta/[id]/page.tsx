@@ -127,7 +127,6 @@ export default async function ProductPage({ params }: PageProps) {
             <p className="text-5xl font-bold text-[#004E09]">
               <CurrencyPrice amount={product.price} />
             </p>
-          </div>
             <p className="text-sm text-gray-500 mt-2">Precio por unidad</p>
           </div>
 
@@ -217,7 +216,7 @@ export default async function ProductPage({ params }: PageProps) {
 
                     <div className="mt-auto">
                       <p className="font-bold text-lg text-[#004E09] mb-2">
-                        ${p.price.toLocaleString("es-CL")}
+                        <CurrencyPrice amount={p.price} />
                       </p>
 
                       <p
